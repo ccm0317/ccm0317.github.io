@@ -41,6 +41,7 @@ h1{font-family:var(--display);font-size:clamp(22px,3.4vw,30px);margin:2px 0 0;te
 button{font:inherit;cursor:pointer}
 .btn{border:1px solid var(--rule-strong);background:var(--sheet);color:var(--ink);padding:6px 14px;border-radius:4px;font-size:14px}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
+a.btn{text-decoration:none;display:inline-block}
 .btn-primary{background:var(--accent);border-color:var(--accent);color:var(--sheet);font-weight:500}
 .btn-primary:hover{color:var(--sheet);filter:brightness(1.08)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
@@ -149,10 +150,10 @@ td.ownhi{color:var(--bad);font-weight:500}
       <h1>工程款請款管理系統<span class="demo-tag">示範版</span></h1>
       <p class="proj" id="projName"></p>
     </div>
-    <button class="btn" id="resetBtn" type="button">重置示範資料</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" id="roleLink" href="#"></a><button class="btn" id="resetBtn" type="button">重置示範資料</button></div>
   </div>
   <div class="wrap">
-    <nav class="tabs" role="tablist" aria-label="功能">
+    <nav class="tabs" role="tablist" aria-label="功能" id="tabNav">
       <button role="tab" id="t-dash" aria-controls="p-dash" aria-selected="true">業主戰情看板</button>
       <button role="tab" id="t-entry" aria-controls="p-entry" aria-selected="false">請款作業</button>
       <button role="tab" id="t-overview" aria-controls="p-overview" aria-selected="false">承包商與付款模式</button>
@@ -275,7 +276,7 @@ td.ownhi{color:var(--bad);font-weight:500}
 <script>
 (function(){
 'use strict';
-var FULL = false;
+var FULL = false, PAGE = 'dash', HOME = './';
 // ================= 示範資料（皆為虛構） =================
 var PROJECT = '示範建案｜地上 15 層、地下 3 層 RC 集合住宅（虛構資料）';
 var BASE = '2026-10-15', CHART_FROM='2026-01', CHART_TO='2027-12';
@@ -708,8 +709,12 @@ document.getElementById('resetBtn').addEventListener('click',function(){
   clearTimeout(resetTimer);resetArmed=false;b.textContent='重置示範資料';claims=seedClaims();save();sel.picks={};hideConfirm();showTab(currentTab());toast('已恢復為示範資料');
 });
 var rT;window.addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(function(){if(currentTab()==='dash')drawCharts();},200);});
-document.getElementById('projName').textContent=PROJECT;
-var h=(location.hash||'').replace('#','');showTab(tabs.indexOf(h)>=0?h:'dash');
+document.getElementById('projName').textContent=PROJECT+(PAGE==='claim'?'｜請款填單（承辦人員）':'');
+var roleLink=document.getElementById('roleLink');
+if(PAGE==='claim'){document.getElementById('tabNav').hidden=true;roleLink.textContent='業主戰情看板';roleLink.href=HOME;tabs=['entry'];document.title='請款填單｜工程款請款管理系統';}
+else{roleLink.textContent='請款填單頁（承辦人員）';roleLink.href=HOME+'claim/';}
+window.addEventListener('storage',function(e){if(e.key===KEY){claims=load();renders[currentTab()]();}});
+var h=(location.hash||'').replace('#','');showTab(PAGE==='claim'?'entry':(tabs.indexOf(h)>=0?h:'dash'));
 })();
 </script>
 </body>
