@@ -178,15 +178,16 @@ td.ownhi{color:var(--bad);font-weight:500}
       </div>
     </div>
     <div class="sheet">
-      <div class="sheet-head"><h2>累計計價 S 曲線：計畫與實際</h2><span class="hint">期別計價金額；實際依撥款月份累計，計畫依各期預計完成月</span></div>
-      <div class="legend"><span><span class="sw" style="background:var(--c1)"></span>實際累計計價</span><span><span class="sw" style="background:var(--plan)"></span>計畫累計（虛線）</span></div>
-      <div class="chart" id="sCurve"></div>
+      <div class="sheet-head"><h2>每月資金需求：實際與預估</h2><span class="hint">基準日前為實際付款，之後依各期預計完成月推估（期別請款）</span></div>
+      <div class="legend"><span><span class="sw box" style="background:var(--c1)"></span>建融撥款</span><span><span class="sw box" style="background:var(--c2)"></span>業主自有資金</span><span><span class="sw box" style="background:var(--grid);outline:1px dashed var(--rule-strong)"></span>淡色為預估</span></div>
+      <div class="chart" id="needChart"></div>
+      <p class="note" id="needNote" style="margin:0 18px 16px"></p>
     </div>
     <div class="grid2">
       <div class="sheet">
-        <div class="sheet-head"><h2>每月付款金額</h2><span class="hint">建融與自籌堆疊</span></div>
-        <div class="legend"><span><span class="sw box" style="background:var(--c1)"></span>建融撥款</span><span><span class="sw box" style="background:var(--c2)"></span>自籌款</span></div>
-        <div class="chart" id="mBars"></div>
+        <div class="sheet-head"><h2>累計資金來源</h2><span class="hint">實線為實際，虛線為預估</span></div>
+        <div class="legend"><span><span class="sw" style="background:var(--c1)"></span>建融累計</span><span><span class="sw" style="background:var(--c2)"></span>自有資金累計</span></div>
+        <div class="chart" id="cumChart"></div>
       </div>
       <div class="sheet">
         <div class="sheet-head"><h2>未來 3 個月資金需求</h2><span class="hint">期別請款；逾期未請併入本月</span></div>
@@ -465,16 +466,15 @@ function gauge(label,used,cap,color,hint){var p=cap?used/cap*100:0;return '<div 
 
 // ---------- 圖表（純 SVG） ----------
 function niceMax(v){if(v<=0)return 1;var e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e;var n=f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10;return n*e;}
-function monthSeries(){
-  var lastPay=claims.reduce(function(a,c){return c.pay>a?c.pay:a;},CHART_FROM);
-  var to=lastPay>CHART_TO?lastPay:CHART_TO, months=monthsBetween(CHART_FROM,to);
-  var actM=months.map(function(){return {loan:0,own:0,gross:0};}), plan=months.map(function(){return 0;});
-  claims.forEach(function(c){var i=months.indexOf(c.pay);if(i>=0){actM[i].loan+=c.loan;actM[i].own+=c.own;if(c.type==='stage')actM[i].gross+=c.gross;}});
-  CONTRACTORS.forEach(function(c){STAGES[c.id].forEach(function(s){var i=months.indexOf(s.plan);if(i>=0)plan[i]+=s.amount;});});
-  var lastStage=stageClaims().reduce(function(a,c){return c.pay>a?c.pay:a;},CHART_FROM);
-  var cumA=[],cumP=[],a=0,p=0,lastIdx=months.indexOf(lastStage);
-  months.forEach(function(m,i){a+=actM[i].gross;p+=plan[i];cumP.push(p);cumA.push(i<=lastIdx?a:null);});
-  return {months:months,actM:actM,cumA:cumA,cumP:cumP};
+function fundSeries(){
+  var sim=simulate(), lastPay=claims.reduce(function(a,c){return c.pay>a?c.pay:a;},CHART_FROM), lastSim=sim.length?sim[sim.length-1].ym:CHART_TO;
+  var to=[CHART_TO,lastPay,lastSim].sort().pop(), months=monthsBetween(CHART_FROM,to);
+  var rows=months.map(function(m){return {ym:m,aL:0,aO:0,fL:0,fO:0};});
+  claims.forEach(function(c){var i=months.indexOf(c.pay);if(i>=0){rows[i].aL+=c.loan;rows[i].aO+=c.own;}});
+  sim.forEach(function(r){var i=months.indexOf(r.ym);if(i>=0){rows[i].fL+=r.loan;rows[i].fO+=r.own;}});
+  var cL=0,cO=0,bm=baseMonth();
+  rows.forEach(function(r){cL+=r.aL+r.fL;cO+=r.aO+r.fO;r.cL=cL;r.cO=cO;r.future=r.ym>=bm;});
+  return rows;
 }
 var W=720,H=280,PAD={l:58,r:16,t:16,b:30};
 function dims(el){W=Math.max(300,Math.round(el.clientWidth-24));H=W<520?220:280;}
@@ -487,32 +487,51 @@ function axes(months,max,fmt){
 }
 function yLbl(v){return v===0?'0':(v/1e8).toFixed(v<1e8?2:1).replace(/\.?0+$/,'')+' 億';}
 function yLblM(v){return v===0?'0':Math.round(v/1e4).toLocaleString('zh-TW')+' 萬';}
+function baseLine(X,i,ih){return i>=0?'<line x1="'+X(i)+'" x2="'+X(i)+'" y1="'+PAD.t+'" y2="'+(PAD.t+ih)+'" stroke="var(--rule-strong)" stroke-dasharray="2 3"/><text x="'+(X(i)+4)+'" y="'+(PAD.t+10)+'">基準日</text>':'';}
 function drawCharts(){
-  var d=monthSeries(), n=d.months.length, el=document.getElementById('sCurve'); dims(el);
+  var rows=fundSeries(), n=rows.length, bmI=rows.map(function(r){return r.ym;}).indexOf(baseMonth());
+  var months=rows.map(function(r){return r.ym;});
+  // 1. 每月資金需求
+  var el=document.getElementById('needChart'); dims(el);
   var iw=W-PAD.l-PAD.r, ih=H-PAD.t-PAD.b, X=function(i){return PAD.l+iw*(i+0.5)/n;};
-  var max=niceMax(TOTAL), Y=function(v){return PAD.t+ih-ih*v/max;};
-  var pathP=d.cumP.map(function(v,i){return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);}).join(' ');
-  var pts=d.cumA.map(function(v,i){return v==null?null:[X(i),Y(v),v];}).filter(Boolean);
-  var pathA=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
-  var last=pts[pts.length-1], bmI=d.months.indexOf(baseMonth());
-  el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="計畫與實際累計計價 S 曲線">'+axes(d.months,max,yLbl)+
-    (bmI>=0?'<line x1="'+X(bmI)+'" x2="'+X(bmI)+'" y1="'+PAD.t+'" y2="'+(PAD.t+ih)+'" stroke="var(--rule-strong)" stroke-dasharray="2 3"/><text x="'+(X(bmI)+4)+'" y="'+(PAD.t+10)+'">基準日</text>':'')+
-    '<path d="'+pathP+'" fill="none" stroke="var(--plan)" stroke-width="2" stroke-dasharray="6 4"/><path d="'+pathA+'" fill="none" stroke="var(--c1)" stroke-width="2"/>'+
-    (last?'<circle cx="'+last[0]+'" cy="'+last[1]+'" r="4.5" fill="var(--c1)" stroke="var(--sheet)" stroke-width="2"/><text x="'+(last[0]-8)+'" y="'+(last[1]-10)+'" text-anchor="end" style="fill:var(--ink)">'+yLbl(last[2])+'</text>':'')+
+  var tot=function(r){return r.aL+r.aO+r.fL+r.fO;};
+  var mx=niceMax(Math.max.apply(null,rows.map(tot).concat([1]))), Y=function(v){return PAD.t+ih-ih*v/mx;};
+  var bw=Math.max(3,Math.min(30,iw/n-4)), bars='';
+  rows.forEach(function(r,i){
+    var L=r.aL+r.fL,O=r.aO+r.fO;if(!(L+O))return;var x=X(i)-bw/2,op=r.future&&!(r.aL+r.aO)?' fill-opacity="0.45"':'',yl=Y(L),yo=Y(L+O);
+    if(L)bars+='<rect x="'+x+'" y="'+yl+'" width="'+bw+'" height="'+(PAD.t+ih-yl)+'" fill="var(--c1)"'+op+'/>';
+    if(O)bars+='<rect x="'+x+'" y="'+yo+'" width="'+bw+'" height="'+Math.max(1,yl-yo-(L?2:0))+'" rx="2" fill="var(--c2)"'+op+'/>';
+  });
+  // 標示自有資金最高的預估月
+  var peak=null;rows.forEach(function(r,i){if(r.future&&(!peak||r.fO>peak.v))peak={i:i,v:r.fO};});
+  var peakLbl=peak&&peak.v>0?'<text x="'+X(peak.i)+'" y="'+(Y(tot(rows[peak.i]))-6)+'" text-anchor="middle" style="fill:var(--ink)">自有 '+yLblM(peak.v)+'</text>':'';
+  el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="每月資金需求，建融與自有資金，實際與預估">'+axes(months,mx,yLblM)+
+    (bmI>=0?'<rect x="'+(X(bmI)-iw/n/2)+'" y="'+PAD.t+'" width="'+(W-PAD.r-(X(bmI)-iw/n/2))+'" height="'+ih+'" fill="var(--grid)" fill-opacity="0.35"/>'+baseLine(X,bmI,ih):'')+bars+peakLbl+
     '<line class="xh" x1="0" x2="0" y1="'+PAD.t+'" y2="'+(PAD.t+ih)+'" stroke="var(--muted)" stroke-width="1" visibility="hidden"/><rect x="'+PAD.l+'" y="'+PAD.t+'" width="'+iw+'" height="'+ih+'" fill="transparent" class="hit"/></svg><div class="tip" hidden></div>';
-  hover(el,W,H,n,X,function(i){return '<div>'+roc(d.months[i])+'</div><div>實際累計 <b>'+(d.cumA[i]==null?'—':money(d.cumA[i]))+'</b></div><div>計畫累計 <b>'+money(d.cumP[i])+'</b></div>';},function(i){return Y(d.cumA[i]==null?d.cumP[i]:Math.max(d.cumA[i],d.cumP[i]));});
-  var el2=document.getElementById('mBars'); dims(el2);
-  var endM=d.months.reduce(function(a,m,i){return (d.actM[i].loan+d.actM[i].own)?m:a;},baseMonth()); if(endM<baseMonth())endM=baseMonth();
-  var nb=d.months.indexOf(endM)+1, b={months:d.months.slice(0,nb),actM:d.actM.slice(0,nb)}, iw2=W-PAD.l-PAD.r, ih2=H-PAD.t-PAD.b;
-  var X2=function(i){return PAD.l+iw2*(i+0.5)/nb;};
-  var mx=niceMax(Math.max.apply(null,b.actM.map(function(m){return m.loan+m.own;}).concat([1]))), Y2=function(v){return PAD.t+ih2-ih2*v/mx;};
-  var bw=Math.max(4,Math.min(36,iw2/nb-6)), bars='';
-  b.actM.forEach(function(m,i){if(!(m.loan+m.own))return;var x=X2(i)-bw/2,yl=Y2(m.loan),yo=Y2(m.loan+m.own);
-    if(m.loan)bars+='<rect x="'+x+'" y="'+yl+'" width="'+bw+'" height="'+(PAD.t+ih2-yl)+'" fill="var(--c1)"/>';
-    if(m.own)bars+='<rect x="'+x+'" y="'+yo+'" width="'+bw+'" height="'+Math.max(1,yl-yo-(m.loan?2:0))+'" rx="2" fill="var(--c2)"/>';});
-  el2.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="每月付款金額，建融與自籌堆疊">'+axes(b.months,mx,yLblM)+bars+
+  hover(el,W,H,n,X,function(i){var r=rows[i],h='<div>'+roc(r.ym)+'</div>';
+    if(r.aL+r.aO)h+='<div>實際：建融 <b>'+money(r.aL)+'</b>／自有 <b>'+money(r.aO)+'</b></div>';
+    if(r.fL+r.fO)h+='<div>預估：建融 <b>'+money(r.fL)+'</b>／自有 <b>'+money(r.fO)+'</b></div>';
+    if(!(r.aL+r.aO+r.fL+r.fO))h+='<div>無付款</div>';return h;},function(i){return Y(tot(rows[i]));});
+  // 結論
+  var fut=rows.filter(function(r){return r.future;}), next12=fut.slice(0,12), own12=next12.reduce(function(a,r){return a+r.fO;},0);
+  var note='未來 12 個月預估需準備自有資金 '+money(own12)+'。';
+  if(peak&&peak.v>0)note+='自有資金需求最高在 '+roc(rows[peak.i].ym)+'，約 '+money(peak.v)+'。';
+  
+  document.getElementById('needNote').textContent=note;
+  // 2. 累計資金來源
+  var el2=document.getElementById('cumChart'); dims(el2);
+  var iw2=W-PAD.l-PAD.r, ih2=H-PAD.t-PAD.b, X2=function(i){return PAD.l+iw2*(i+0.5)/n;};
+  var mx2=niceMax(Math.max(rows[n-1].cL,rows[n-1].cO,1)), Y2=function(v){return PAD.t+ih2-ih2*v/mx2;};
+  var cut=bmI>=0?bmI-1:n-1;
+  function path(key,from,to){var d='';for(var i=Math.max(0,from);i<=to;i++)d+=(d?'L':'M')+X2(i).toFixed(1)+' '+Y2(rows[i][key]).toFixed(1);return d;}
+  var g=axes(months,mx2,yLbl)+baseLine(X2,bmI,ih2);
+  [['cL','var(--c1)'],['cO','var(--c2)']].forEach(function(s){
+    g+='<path d="'+path(s[0],0,cut)+'" fill="none" stroke="'+s[1]+'" stroke-width="2"/><path d="'+path(s[0],cut,n-1)+'" fill="none" stroke="'+s[1]+'" stroke-width="2" stroke-dasharray="6 4"/>';
+    var last=rows[n-1][s[0]];g+='<circle cx="'+X2(n-1)+'" cy="'+Y2(last)+'" r="4" fill="'+s[1]+'" stroke="var(--sheet)" stroke-width="2"/><text x="'+(X2(n-1)-8)+'" y="'+(Y2(last)-9)+'" text-anchor="end" style="fill:var(--ink)">'+yLbl(last)+'</text>';
+  });
+  el2.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="建融與自有資金累計金額，實際與預估">'+g+
     '<line class="xh" x1="0" x2="0" y1="'+PAD.t+'" y2="'+(PAD.t+ih2)+'" stroke="var(--muted)" stroke-width="1" visibility="hidden"/><rect x="'+PAD.l+'" y="'+PAD.t+'" width="'+iw2+'" height="'+ih2+'" fill="transparent" class="hit"/></svg><div class="tip" hidden></div>';
-  hover(el2,W,H,nb,X2,function(i){var m=b.actM[i];return '<div>'+roc(b.months[i])+' 付款</div><div>建融 <b>'+money(m.loan)+'</b></div><div>自籌 <b>'+money(m.own)+'</b></div><div>合計 <b>'+money(m.loan+m.own)+'</b></div>';},function(i){var m=b.actM[i];return Y2(m.loan+m.own);});
+  hover(el2,W,H,n,X2,function(i){var r=rows[i];return '<div>'+roc(r.ym)+(r.future?'（預估）':'')+'</div><div>建融累計 <b>'+money(r.cL)+'</b></div><div>自有資金累計 <b>'+money(r.cO)+'</b></div>';},function(i){return Y2(Math.max(rows[i].cL,rows[i].cO));});
 }
 function hover(el,W,H,n,X,html,yAt){
   var svg=el.querySelector('svg'),hit=el.querySelector('.hit'),tip=el.querySelector('.tip'),xh=el.querySelector('.xh');
