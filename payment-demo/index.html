@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>工程款請款管理系統｜示範版</title>
+<meta name="description" content="業主端工程款請款管理系統示範版：依付款期別請款、自動累計已請成數、防止重複與超額請款。示範資料皆為虛構。">
+<link rel="icon" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a valuation-ledger page; header strip, three tabs (overview, claim entry, claim records), each a sheet of ruled tables */
+:root{
+  --paper:#f3f5f7; --sheet:#ffffff; --ink:#1b2733; --muted:#5b6876; --rule:#d5dbe1; --rule-strong:#a9b4bf;
+  --accent:#1f4e79; --accent-soft:#e3ecf5; --ok:#2e7d4f; --ok-soft:#e2f2e8; --warn:#a4620f; --warn-soft:#fbefdc; --bad:#b03a2e; --bad-soft:#f9e3e0;
+  --display:"Noto Serif TC","Songti TC",serif; --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#11171d; --sheet:#18212a; --ink:#e3e9ef; --muted:#97a4b1; --rule:#2c3946; --rule-strong:#475766;
+  --accent:#7fb2e0; --accent-soft:#1c3045; --ok:#6cc391; --ok-soft:#173226; --warn:#e3a95b; --warn-soft:#3a2b16; --bad:#ef8d80; --bad-soft:#3d1f1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#11171d; --sheet:#18212a; --ink:#e3e9ef; --muted:#97a4b1; --rule:#2c3946; --rule-strong:#475766;
+  --accent:#7fb2e0; --accent-soft:#1c3045; --ok:#6cc391; --ok-soft:#173226; --warn:#e3a95b; --warn-soft:#3a2b16; --bad:#ef8d80; --bad-soft:#3d1f1b; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+td.no{white-space:nowrap}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{border-bottom:1px solid var(--rule);background:var(--sheet)}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;padding-block:22px 16px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted)}
+h1{font-family:var(--display);font-size:clamp(22px,3.4vw,30px);margin:2px 0 0;text-wrap:balance}
+.proj{color:var(--muted);font-size:14px;margin:4px 0 0}
+.demo-tag{display:inline-block;font-size:12px;padding:1px 8px;border:1px solid var(--warn);color:var(--warn);border-radius:3px;margin-left:6px;vertical-align:2px}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--rule-strong);background:var(--sheet);color:var(--ink);padding:6px 14px;border-radius:4px;font-size:14px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--sheet);font-weight:500}
+.btn-primary:hover{color:var(--sheet);filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+nav.tabs{display:flex;gap:4px;overflow-x:auto}
+nav.tabs button{background:none;border:none;border-bottom:3px solid transparent;padding:10px 14px;color:var(--muted);font-size:15px;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+main{padding-block:24px 48px}
+section[role="tabpanel"]{display:flex;flex-direction:column;gap:20px}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px}
+.sheet-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;padding:14px 18px;border-bottom:1px solid var(--rule)}
+h2{font-family:var(--display);font-size:18px;margin:0}
+.hint{font-size:13px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.kpi{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .k{font-size:13px;color:var(--muted)}
+.kpi .v{font-family:var(--mono);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.kpi .s{font-size:12px;color:var(--muted)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:middle}
+th{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.04em;white-space:nowrap;background:var(--sheet)}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.c,th.c{text-align:center}
+tfoot td{border-top:2px solid var(--rule-strong);border-bottom:none;font-weight:700}
+.bar{position:relative;height:8px;background:var(--accent-soft);border-radius:4px;min-width:90px;overflow:hidden}
+.bar>span{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:4px}
+.pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.p-none{background:var(--accent-soft);color:var(--accent)}
+.p-part{background:var(--warn-soft);color:var(--warn)}
+.p-done{background:var(--ok-soft);color:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 18px}
+.chip{border:1px solid var(--rule-strong);background:var(--sheet);color:var(--ink);border-radius:4px;padding:8px 14px;text-align:left;display:flex;flex-direction:column;gap:0;min-width:150px}
+.chip small{color:var(--muted);font-size:12px}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+tr.partial td{background:var(--warn-soft)}
+tr.sel td{background:var(--accent-soft)}
+tr.donerow td{color:var(--muted)}
+input[type="number"],input[type="text"],input[type="date"],select{font:inherit;font-size:14px;border:1px solid var(--rule-strong);border-radius:4px;padding:5px 8px;background:var(--sheet);color:var(--ink)}
+input.pct{width:76px;text-align:right;font-family:var(--mono)}
+input.pct[aria-invalid="true"]{border-color:var(--bad);background:var(--bad-soft)}
+.err{color:var(--bad);font-size:12px;display:block}
+.remain{font-family:var(--mono);font-size:12px;color:var(--warn)}
+.toggle-done{background:none;border:none;color:var(--accent);padding:10px 18px;font-size:13px;text-align:left;width:100%;border-top:1px dashed var(--rule)}
+.entry-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+@media (max-width:880px){.entry-grid{grid-template-columns:minmax(0,1fr)}}
+.summary{position:sticky;top:12px}
+.summary dl{margin:0;padding:14px 18px;display:grid;grid-template-columns:auto 1fr;gap:6px 12px}
+.summary dt{color:var(--muted);font-size:13px}
+.summary dd{margin:0;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.summary dd.big{font-size:20px;font-weight:500}
+.summary .fields{display:flex;flex-direction:column;gap:10px;padding:0 18px 14px}
+.summary label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.desc{font-size:13px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:8px 10px;min-height:44px;color:var(--ink)}
+.actions{display:flex;gap:8px;padding:0 18px 18px;flex-wrap:wrap}
+.confirm{margin:0 18px 18px;border:1px solid var(--accent);border-radius:4px;padding:12px;background:var(--accent-soft);font-size:14px;display:flex;flex-direction:column;gap:10px}
+.empty{padding:28px 18px;color:var(--muted);text-align:center}
+.filter{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--sheet);padding:10px 18px;border-radius:4px;font-size:14px;max-width:calc(100% - 32px);z-index:10}
+.note{font-size:13px;color:var(--muted);border-left:3px solid var(--rule-strong);padding:4px 12px;margin:0}
+footer{border-top:1px solid var(--rule);padding-block:18px 28px;font-size:13px;color:var(--muted)}
+footer a{color:var(--accent)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+@media (prefers-reduced-motion:no-preference){.bar>span{transition:width .4s ease}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap head">
+    <div>
+      <div class="eyebrow">OWNER-SIDE PAYMENT LEDGER · DEMO</div>
+      <h1>工程款請款管理系統<span class="demo-tag">示範版</span></h1>
+      <p class="proj" id="projName"></p>
+    </div>
+    <button class="btn" id="resetBtn" type="button">重置示範資料</button>
+  </div>
+  <div class="wrap">
+    <nav class="tabs" role="tablist" aria-label="功能">
+      <button role="tab" id="t-overview" aria-controls="p-overview" aria-selected="true">計價統整總覽</button>
+      <button role="tab" id="t-entry" aria-controls="p-entry" aria-selected="false">請款作業</button>
+      <button role="tab" id="t-records" aria-controls="p-records" aria-selected="false">請款紀錄</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- 計價統整總覽 -->
+  <section role="tabpanel" id="p-overview" aria-labelledby="t-overview">
+    <div class="kpis" id="kpis"></div>
+    <div class="sheet">
+      <div class="sheet-head"><h2>各承包商計價進度</h2><span class="hint">已請款依每期請款明細即時加總</span></div>
+      <div class="scroll"><table id="ovTable"></table></div>
+    </div>
+    <p class="note">融資撥款與自籌款依合約約定 70%／30% 拆分。期別狀態：<span class="pill p-done">已請滿</span> <span class="pill p-part">部分請款</span> <span class="pill p-none">未請款</span></p>
+  </section>
+
+  <!-- 請款作業 -->
+  <section role="tabpanel" id="p-entry" aria-labelledby="t-entry" hidden>
+    <div class="sheet">
+      <div class="sheet-head"><h2>1. 選擇承包商</h2><span class="hint">依合約付款期別請款</span></div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="entry-grid">
+      <div class="sheet" style="min-width:0">
+        <div class="sheet-head"><h2>2. 勾選本次請款期別</h2><span class="hint" id="stageHint"></span></div>
+        <div id="stageArea"></div>
+      </div>
+      <aside class="sheet summary" aria-label="本次請款">
+        <div class="sheet-head"><h2>3. 本次請款</h2></div>
+        <dl>
+          <dt>請款單號</dt><dd id="sNo">—</dd>
+          <dt>勾選期別</dt><dd id="sCount">0 期</dd>
+          <dt>本次請款合計</dt><dd class="big" id="sTotal">0</dd>
+          <dt>融資撥款 70%</dt><dd id="sLoan">0</dd>
+          <dt>自籌款 30%</dt><dd id="sOwn">0</dd>
+          <dt>請款後累計</dt><dd id="sCum">0</dd>
+        </dl>
+        <div class="fields">
+          <label for="fDate">請款日期<input type="date" id="fDate"></label>
+          <label for="fInv">發票號碼（選填）<input type="text" id="fInv" placeholder="例：AB12345678" maxlength="10"></label>
+          <div><span class="hint">請款項目說明（自動產生）</span><div class="desc" id="sDesc">尚未勾選期別</div></div>
+        </div>
+        <div class="actions"><button class="btn btn-primary" id="submitBtn" type="button" disabled>送出請款</button><button class="btn" id="clearBtn" type="button">清除勾選</button></div>
+        <div class="confirm" id="confirmBox" hidden></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 請款紀錄 -->
+  <section role="tabpanel" id="p-records" aria-labelledby="t-records" hidden>
+    <div class="sheet">
+      <div class="sheet-head"><h2>請款紀錄</h2>
+        <label class="filter" for="recFilter">承包商<select id="recFilter"><option value="">全部</option></select></label>
+      </div>
+      <div class="scroll"><table id="recTable"></table></div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p style="margin:0 0 6px">示範資料（建案、承包商、金額）皆為虛構。原系統以 Google Apps Script＋Google Sheets 開發，用於建案業主端的工程款請款管理。</p>
+  <p style="margin:0">開發：張哲銘 · <a href="../">回到個人網站</a></p>
+</footer>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+'use strict';
+// ---------- 示範資料（皆為虛構） ----------
+var PROJECT = '示範建案｜地上 15 層、地下 3 層 RC 集合住宅（虛構資料）';
+var LOAN = 0.7;
+var CONTRACTORS = [
+  {id:'C001', name:'宏築營造股份有限公司', short:'宏築營造', type:'建築', amt:620000000, prefix:'HZ'},
+  {id:'C002', name:'信達機電工程股份有限公司', short:'信達機電', type:'機電', amt:110000000, prefix:'XD'},
+  {id:'C003', name:'安視系統科技有限公司', short:'安視系統', type:'監控', amt:12000000, prefix:'AS'},
+  {id:'C004', name:'明光照明有限公司', short:'明光照明', type:'燈具', amt:5000000, prefix:'MG'},
+  {id:'C005', name:'森居室內裝修股份有限公司', short:'森居裝修', type:'裝修', amt:60000000, prefix:'SJ'}
+];
+function floors(from,to,pct){var a=[];for(var f=from;f<=to;f++)a.push([f+'F 樓版混凝土澆置完成',pct]);return a;}
+var STAGE_DEF = {
+  C001:[['營造合約簽訂完成',10],['放樣勘驗申報完成',2],['基樁施工完成',4],['連續壁施工完成 1/2',4],['連續壁全部完成',4],['開挖及支撐架設完成',4],['筏式基礎底版澆置完成',4],['B3 樓版混凝土澆置完成',3],['B2 樓版混凝土澆置完成',3],['B1 樓版混凝土澆置完成',3],['1F 樓版混凝土澆置完成',4]]
+        .concat(floors(2,15,2.5)).concat([['屋突層結構完成',2],['外牆磁磚施作完成',5],['門窗安裝完成',4],['取得使用執照',5],['交屋保留款',4]]),
+  C002:[['機電合約簽訂完成',10],['地下室結構體配管完成',8],['1–5F 結構體配管完成',8],['6–10F 結構體配管完成',8],['11–15F 結構體配管完成',8],['1–5F 穿線完成',8],['6–10F 穿線完成',8],['11–15F 穿線完成',8],['主要設備進場',10],['系統測試完成',10],['取得使用執照',8],['保留款',6]],
+  C003:[['監控合約簽訂完成',10],['管線配置完成',25],['設備安裝完成',30],['系統測試完成',20],['驗收完成',10],['保留款',5]],
+  C004:[['燈具合約簽訂完成',10],['1–5F 燈具配管完成',15],['6–10F 燈具配管完成',15],['11–15F 燈具配管完成',15],['燈具安裝完成',30],['驗收及保留款',15]],
+  C005:[['裝修合約簽訂完成',10],['大廳隔間完成',15],['大廳天花完成',15],['大廳地坪完成',15],['梯廳裝修完成',15],['公設空間裝修完成',15],['驗收完成',10],['保留款',5]]
+};
+// 種子請款紀錄：[單號, 日期(西元), 承包商, [[期別, 本次成數%], ...], 發票]
+var SEED = [
+  ['HZ-001','2025-03-20','C001',[[1,100]],'HZ00000101'],
+  ['HZ-002','2025-04-21','C001',[[2,100],[3,100]],'HZ00000102'],
+  ['HZ-003','2025-05-20','C001',[[4,100]],'HZ00000103'],
+  ['HZ-004','2025-06-20','C001',[[5,100],[6,80]],'HZ00000104'],
+  ['HZ-005','2025-07-21','C001',[[6,20],[7,100]],'HZ00000105'],
+  ['HZ-006','2025-08-20','C001',[[8,100],[9,100]],'HZ00000106'],
+  ['HZ-007','2025-09-22','C001',[[10,100],[11,90]],'HZ00000107'],
+  ['HZ-008','2025-10-20','C001',[[11,10],[12,100],[13,100]],'HZ00000108'],
+  ['HZ-009','2025-11-20','C001',[[14,100],[15,60]],'HZ00000109'],
+  ['XD-001','2025-04-21','C002',[[1,100]],'XD00000101'],
+  ['XD-002','2025-08-20','C002',[[2,100]],'XD00000102'],
+  ['XD-003','2025-10-20','C002',[[3,100],[4,50]],'XD00000103'],
+  ['AS-001','2025-06-20','C003',[[1,100]],'AS00000101'],
+  ['MG-001','2025-06-20','C004',[[1,100],[2,100]],'MG00000101'],
+  ['SJ-001','2025-09-22','C005',[[1,100]],'SJ00000101']
+];
+
+// ---------- 衍生資料 ----------
+var cMap = {}; CONTRACTORS.forEach(function(c){cMap[c.id]=c;});
+var STAGES = {}; // cid -> [{no,item,pct,amount}]
+CONTRACTORS.forEach(function(c){
+  STAGES[c.id] = STAGE_DEF[c.id].map(function(s,i){return {no:i+1,item:s[0],pct:s[1],amount:Math.round(c.amt*s[1]/100)};});
+});
+function stageOf(cid,no){return STAGES[cid][no-1];}
+function lineAmt(cid,no,claimPct){return Math.round(stageOf(cid,no).amount*claimPct/100);}
+function buildClaim(no,date,cid,lines,inv){
+  var details = lines.map(function(l){return {stage:l[0],pct:l[1],amount:lineAmt(cid,l[0],l[1])};});
+  var total = details.reduce(function(a,d){return a+d.amount;},0);
+  var loan = Math.round(total*LOAN);
+  return {no:no,date:date,cid:cid,details:details,total:total,loan:loan,own:total-loan,invoice:inv||''};
+}
+function seedClaims(){return SEED.map(function(s){return buildClaim(s[0],s[1],s[2],s[3],s[4]);});}
+
+// ---------- 狀態（存在瀏覽器） ----------
+var KEY='ccm-payment-demo-v1';
+var claims;
+function load(){
+  try{var raw=localStorage.getItem(KEY); if(raw){var d=JSON.parse(raw); if(Array.isArray(d)&&d.length) return d;}}catch(e){}
+  return seedClaims();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(claims));}catch(e){}}
+claims = load();
+
+// 每期累計已請成數（%）
+function claimedPctMap(cid){
+  var m={};
+  claims.forEach(function(c){if(c.cid!==cid)return; c.details.forEach(function(d){m[d.stage]=(m[d.stage]||0)+d.pct;});});
+  return m;
+}
+function claimedTotal(cid){return claims.filter(function(c){return c.cid===cid;}).reduce(function(a,c){return a+c.total;},0);}
+
+// ---------- 格式 ----------
+function money(n){return Math.round(n).toLocaleString('zh-TW');}
+function roc(iso){var p=iso.split('-');return (Number(p[0])-1911)+'/'+p[1]+'/'+p[2];}
+function todayISO(){var d=new Date();var z=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
+function esc(s){return String(s).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
+function pctTxt(p){return (Math.round(p*100)/100)+'%';}
+var toastTimer;
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.hidden=true;},2800);}
+
+// ---------- 分頁 ----------
+var tabs=['overview','entry','records'];
+function showTab(name){
+  tabs.forEach(function(t){
+    document.getElementById('t-'+t).setAttribute('aria-selected',t===name?'true':'false');
+    document.getElementById('p-'+t).hidden = t!==name;
+  });
+  if(name==='overview')renderOverview();
+  if(name==='records')renderRecords();
+  if(name==='entry')renderEntry();
+}
+tabs.forEach(function(t){document.getElementById('t-'+t).addEventListener('click',function(){showTab(t);});});
+
+// ---------- 總覽 ----------
+function renderOverview(){
+  var totalAmt=0,totalClaimed=0,stDone=0,stPart=0,stNone=0;
+  var rows = CONTRACTORS.map(function(c){
+    var claimed=claimedTotal(c.id), m=claimedPctMap(c.id), d=0,p=0,n=0;
+    STAGES[c.id].forEach(function(s){var v=m[s.no]||0; if(v>=100)d++; else if(v>0)p++; else n++;});
+    totalAmt+=c.amt; totalClaimed+=claimed; stDone+=d; stPart+=p; stNone+=n;
+    var prog=claimed/c.amt*100;
+    return '<tr><td><b>'+esc(c.short)+'</b><div class="hint">'+esc(c.type)+'工程</div></td>'+
+      '<td class="num">'+money(c.amt)+'</td><td class="num">'+money(claimed)+'</td><td class="num">'+money(c.amt-claimed)+'</td>'+
+      '<td style="min-width:140px"><div class="bar" role="img" aria-label="請款進度 '+prog.toFixed(1)+'%"><span style="width:'+Math.min(100,prog)+'%"></span></div><div class="hint" style="font-family:var(--mono)">'+prog.toFixed(1)+'%</div></td>'+
+      '<td class="c"><span class="pill p-done">'+d+'</span> <span class="pill p-part">'+p+'</span> <span class="pill p-none">'+n+'</span></td></tr>';
+  }).join('');
+  var prog=totalClaimed/totalAmt*100, loanClaimed=claims.reduce(function(a,c){return a+c.loan;},0);
+  document.getElementById('ovTable').innerHTML='<thead><tr><th>承包商</th><th class="num">合約金額</th><th class="num">累計已請款</th><th class="num">剩餘未請款</th><th>請款進度</th><th class="c">期別狀態</th></tr></thead><tbody>'+rows+
+    '</tbody><tfoot><tr><td>全案合計</td><td class="num">'+money(totalAmt)+'</td><td class="num">'+money(totalClaimed)+'</td><td class="num">'+money(totalAmt-totalClaimed)+'</td><td class="num" style="text-align:left">'+prog.toFixed(1)+'%</td><td class="c" style="font-weight:400"><span class="pill p-done">'+stDone+'</span> <span class="pill p-part">'+stPart+'</span> <span class="pill p-none">'+stNone+'</span></td></tr></tfoot>';
+  document.getElementById('kpis').innerHTML=
+    kpi('合約總額',money(totalAmt),CONTRACTORS.length+' 家承包商、'+(stDone+stPart+stNone)+' 個付款期別')+
+    kpi('累計已請款',money(totalClaimed),'共 '+claims.length+' 張請款單')+
+    kpi('剩餘未請款',money(totalAmt-totalClaimed),'全案請款進度 '+prog.toFixed(1)+'%')+
+    kpi('融資／自籌已撥',money(loanClaimed)+' ／ '+money(totalClaimed-loanClaimed),'依 70%／30% 拆分');
+}
+function kpi(k,v,s){return '<div class="kpi"><span class="k">'+k+'</span><span class="v">'+v+'</span><span class="s">'+s+'</span></div>';}
+
+// ---------- 請款作業 ----------
+var sel = {cid:'C001', picks:{}, showDone:false}; // picks: stageNo -> pct
+function nextNo(cid){
+  var c=cMap[cid], max=0;
+  claims.forEach(function(x){if(x.no.indexOf(c.prefix+'-')===0){var n=parseInt(x.no.split('-')[1],10);if(n>max)max=n;}});
+  return c.prefix+'-'+String(max+1).padStart(3,'0');
+}
+function renderEntry(){
+  document.getElementById('chips').innerHTML=CONTRACTORS.map(function(c){
+    var m=claimedPctMap(c.id), open=STAGES[c.id].filter(function(s){return (m[s.no]||0)<100;}).length;
+    return '<button type="button" class="chip" data-cid="'+c.id+'" aria-pressed="'+(c.id===sel.cid)+'"><b>'+esc(c.short)+'</b><small>'+esc(c.type)+' · 可請 '+open+' 期</small></button>';
+  }).join('');
+  if(!document.getElementById('fDate').value)document.getElementById('fDate').value=todayISO();
+  renderStages(); renderSummary();
+}
+document.getElementById('chips').addEventListener('click',function(e){
+  var b=e.target.closest('.chip'); if(!b)return;
+  if(b.dataset.cid!==sel.cid){sel.cid=b.dataset.cid; sel.picks={}; sel.showDone=false; hideConfirm();}
+  renderEntry();
+});
+function renderStages(){
+  var cid=sel.cid, m=claimedPctMap(cid), list=STAGES[cid];
+  var open=list.filter(function(s){return (m[s.no]||0)<100;}), done=list.filter(function(s){return (m[s.no]||0)>=100;});
+  var parts=open.filter(function(s){return (m[s.no]||0)>0;}).length;
+  document.getElementById('stageHint').textContent='已請滿 '+done.length+' 期已隱藏，部分請款 '+parts+' 期';
+  if(!open.length){document.getElementById('stageArea').innerHTML='<div class="empty">此承包商所有期別皆已請款完成。</div>';return;}
+  var head='<thead><tr><th class="c" style="width:44px">選取</th><th style="width:56px">期別</th><th>完成之工程項目</th><th class="num">比例</th><th class="num">期別金額</th><th class="c">已請成數</th><th class="c">本次成數</th><th class="num">本次金額</th></tr></thead>';
+  var body=open.map(function(s){
+    var c=m[s.no]||0, rem=100-c, picked=Object.prototype.hasOwnProperty.call(sel.picks,s.no), v=picked?sel.picks[s.no]:rem;
+    var invalid=picked&&(!(v>0)||v>rem+1e-9);
+    var status=c>0?'<span class="pill p-part">已請 '+pctTxt(c)+'</span><div class="remain">剩 '+pctTxt(rem)+'</div>':'<span class="pill p-none">未請款</span>';
+    return '<tr class="'+(picked?'sel':(c>0?'partial':''))+'"><td class="c"><input type="checkbox" aria-label="選取第 '+s.no+' 期" data-no="'+s.no+'" '+(picked?'checked':'')+'></td>'+
+      '<td class="no">第 '+s.no+' 期</td><td>'+esc(s.item)+'</td><td class="num">'+s.pct+'%</td><td class="num">'+money(s.amount)+'</td><td class="c">'+status+'</td>'+
+      '<td class="c"><input class="pct" type="number" inputmode="decimal" min="0.01" max="'+rem+'" step="0.01" id="pct-'+s.no+'" aria-label="第 '+s.no+' 期本次成數" data-no="'+s.no+'" value="'+v+'" '+(picked?'':'disabled')+(invalid?' aria-invalid="true"':'')+'>'+
+      (invalid?'<span class="err">'+(v>rem?'超過剩餘 '+pctTxt(rem):'請輸入大於 0')+'</span>':'')+'</td>'+
+      '<td class="num">'+(picked&&!invalid?money(Math.round(s.amount*v/100)):'—')+'</td></tr>';
+  }).join('');
+  var doneRows='';
+  if(done.length){
+    doneRows='<button type="button" class="toggle-done" id="toggleDone">'+(sel.showDone?'收合':'顯示')+'已請滿的 '+done.length+' 期</button>';
+    if(sel.showDone){
+      doneRows+='<div class="scroll"><table>'+done.map(function(s){return '<tr class="donerow"><td class="c" style="width:44px">—</td><td class="no" style="width:56px">第 '+s.no+' 期</td><td>'+esc(s.item)+'</td><td class="num">'+money(s.amount)+'</td><td class="c"><span class="pill p-done">已請滿</span></td></tr>';}).join('')+'</table></div>';
+    }
+  }
+  document.getElementById('stageArea').innerHTML='<div class="scroll"><table>'+head+'<tbody>'+body+'</tbody></table></div>'+doneRows;
+}
+document.getElementById('stageArea').addEventListener('change',function(e){
+  var t=e.target, no=Number(t.dataset.no); if(!no)return;
+  var rem=100-(claimedPctMap(sel.cid)[no]||0);
+  if(t.type==='checkbox'){ if(t.checked)sel.picks[no]=rem; else delete sel.picks[no]; }
+  else if(t.classList.contains('pct')){ sel.picks[no]=Number(t.value); }
+  hideConfirm(); renderStages(); renderSummary();
+  if(t.classList.contains('pct')){var el=document.getElementById('pct-'+no); if(el)el.focus();}
+});
+document.getElementById('stageArea').addEventListener('click',function(e){
+  if(e.target.id==='toggleDone'){sel.showDone=!sel.showDone; renderStages();}
+});
+function pickedLines(){
+  var m=claimedPctMap(sel.cid);
+  return Object.keys(sel.picks).map(Number).sort(function(a,b){return a-b;}).map(function(no){
+    var rem=100-(m[no]||0), v=sel.picks[no];
+    return {stage:no,pct:v,rem:rem,ok:v>0&&v<=rem+1e-9};
+  });
+}
+function descOf(lines){
+  return lines.map(function(l){var s=stageOf(sel.cid,l.stage);return '第'+l.stage+'期 '+s.item+(l.pct<100?' '+pctTxt(l.pct):'');}).join('；');
+}
+function renderSummary(){
+  var lines=pickedLines(), ok=lines.length>0&&lines.every(function(l){return l.ok;});
+  var total=lines.filter(function(l){return l.ok;}).reduce(function(a,l){return a+lineAmt(sel.cid,l.stage,l.pct);},0);
+  var loan=Math.round(total*LOAN);
+  document.getElementById('sNo').textContent=nextNo(sel.cid);
+  document.getElementById('sCount').textContent=lines.length+' 期';
+  document.getElementById('sTotal').textContent=money(total);
+  document.getElementById('sLoan').textContent=money(loan);
+  document.getElementById('sOwn').textContent=money(total-loan);
+  document.getElementById('sCum').textContent=money(claimedTotal(sel.cid)+total)+' / '+money(cMap[sel.cid].amt);
+  document.getElementById('sDesc').textContent=lines.length?descOf(lines):'尚未勾選期別';
+  document.getElementById('submitBtn').disabled=!ok;
+}
+document.getElementById('clearBtn').addEventListener('click',function(){sel.picks={};hideConfirm();renderStages();renderSummary();});
+function hideConfirm(){var b=document.getElementById('confirmBox');b.hidden=true;b.innerHTML='';}
+document.getElementById('submitBtn').addEventListener('click',function(){
+  var lines=pickedLines(); if(!lines.length||!lines.every(function(l){return l.ok;}))return;
+  var date=document.getElementById('fDate').value||todayISO();
+  var c=buildClaim(nextNo(sel.cid),date,sel.cid,lines.map(function(l){return [l.stage,l.pct];}),document.getElementById('fInv').value.trim());
+  var box=document.getElementById('confirmBox');
+  box.innerHTML='<div><b>確認送出 '+c.no+'？</b><br>'+esc(cMap[sel.cid].short)+'，'+lines.length+' 期，合計 NT$ '+money(c.total)+'（融資 '+money(c.loan)+'／自籌 '+money(c.own)+'）</div><div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="okBtn">確認送出</button><button type="button" class="btn" id="cancelBtn">取消</button></div>';
+  box.hidden=false;
+  document.getElementById('okBtn').onclick=function(){
+    // 送出前再次檢查，避免同期別超額請款
+    var m=claimedPctMap(sel.cid), bad=c.details.filter(function(d){return d.pct>100-(m[d.stage]||0)+1e-9;});
+    if(bad.length){toast('第 '+bad[0].stage+' 期超過剩餘成數，已取消送出');hideConfirm();renderStages();renderSummary();return;}
+    claims.push(c); save(); sel.picks={}; document.getElementById('fInv').value=''; hideConfirm();
+    renderEntry(); toast('已送出 '+c.no+'，金額 NT$ '+money(c.total));
+  };
+  document.getElementById('cancelBtn').onclick=hideConfirm;
+  document.getElementById('okBtn').focus();
+});
+
+// ---------- 請款紀錄 ----------
+var recFilter=document.getElementById('recFilter');
+recFilter.innerHTML+=CONTRACTORS.map(function(c){return '<option value="'+c.id+'">'+esc(c.short)+'</option>';}).join('');
+recFilter.addEventListener('change',renderRecords);
+function renderRecords(){
+  var f=recFilter.value;
+  var list=claims.filter(function(c){return !f||c.cid===f;}).slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.no<b.no?1:-1);});
+  if(!list.length){document.getElementById('recTable').innerHTML='<tbody><tr><td class="empty">沒有請款紀錄</td></tr></tbody>';return;}
+  var sum=list.reduce(function(a,c){return a+c.total;},0);
+  document.getElementById('recTable').innerHTML='<thead><tr><th>請款單號</th><th>請款日期</th><th>承包商</th><th>請款期別（本次成數）</th><th class="num">請款金額</th><th class="num">融資 70%</th><th class="num">自籌 30%</th><th>發票號碼</th></tr></thead><tbody>'+
+    list.map(function(c){
+      return '<tr><td style="font-family:var(--mono)">'+esc(c.no)+'</td><td style="font-family:var(--mono);white-space:nowrap">'+roc(c.date)+'</td><td style="white-space:nowrap">'+esc(cMap[c.cid].short)+'</td><td>'+
+        c.details.map(function(d){return '第'+d.stage+'期'+(d.pct<100?'（'+pctTxt(d.pct)+'）':'');}).join('、')+'</td><td class="num">'+money(c.total)+'</td><td class="num">'+money(c.loan)+'</td><td class="num">'+money(c.own)+'</td><td style="font-family:var(--mono)">'+esc(c.invoice||'—')+'</td></tr>';
+    }).join('')+'</tbody><tfoot><tr><td colspan="4">合計 '+list.length+' 張</td><td class="num">'+money(sum)+'</td><td colspan="3"></td></tr></tfoot>';
+}
+
+// ---------- 重置 ----------
+var resetArmed=false, resetTimer;
+document.getElementById('resetBtn').addEventListener('click',function(){
+  var b=this;
+  if(!resetArmed){resetArmed=true;b.textContent='再按一次確認重置';resetTimer=setTimeout(function(){resetArmed=false;b.textContent='重置示範資料';},3000);return;}
+  clearTimeout(resetTimer); resetArmed=false; b.textContent='重置示範資料';
+  claims=seedClaims(); save(); sel.picks={}; hideConfirm();
+  var cur=tabs.filter(function(t){return document.getElementById('t-'+t).getAttribute('aria-selected')==='true';})[0];
+  showTab(cur); toast('已恢復為示範資料');
+});
+
+document.getElementById('projName').textContent=PROJECT;
+var h=(location.hash||'').replace('#','');
+showTab(tabs.indexOf(h)>=0?h:'overview');
+})();
+</script>
+</body>
+</html>
