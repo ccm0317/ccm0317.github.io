@@ -4,31 +4,33 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>工程款請款管理系統｜示範版</title>
-<meta name="description" content="業主端工程款請款管理系統示範版：依付款期別請款、自動累計已請成數、防止重複與超額請款。示範資料皆為虛構。">
+<meta name="description" content="業主端工程款請款管理系統示範版：戰情看板、月別計價統整、依付款期別請款並防止重複與超額請款。示範資料皆為虛構。">
 <link rel="icon" href="../favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a valuation-ledger page; header strip, three tabs (overview, claim entry, claim records), each a sheet of ruled tables */
+/* Layout: an owner's valuation ledger; header strip, five tabs, each a sheet of ruled tables and two plain SVG charts */
 :root{
-  --paper:#f3f5f7; --sheet:#ffffff; --ink:#1b2733; --muted:#5b6876; --rule:#d5dbe1; --rule-strong:#a9b4bf;
+  --paper:#f3f5f7; --sheet:#ffffff; --ink:#1b2733; --muted:#5b6876; --rule:#d5dbe1; --rule-strong:#a9b4bf; --grid:#e6eaee;
   --accent:#1f4e79; --accent-soft:#e3ecf5; --ok:#2e7d4f; --ok-soft:#e2f2e8; --warn:#a4620f; --warn-soft:#fbefdc; --bad:#b03a2e; --bad-soft:#f9e3e0;
+  --c1:#2a6fc0; --c2:#c9802a; --plan:#8a96a3;
   --display:"Noto Serif TC","Songti TC",serif; --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#11171d; --sheet:#18212a; --ink:#e3e9ef; --muted:#97a4b1; --rule:#2c3946; --rule-strong:#475766;
-  --accent:#7fb2e0; --accent-soft:#1c3045; --ok:#6cc391; --ok-soft:#173226; --warn:#e3a95b; --warn-soft:#3a2b16; --bad:#ef8d80; --bad-soft:#3d1f1b; color-scheme:dark}}
+  --paper:#11171d; --sheet:#18212a; --ink:#e3e9ef; --muted:#97a4b1; --rule:#2c3946; --rule-strong:#475766; --grid:#24303b;
+  --accent:#7fb2e0; --accent-soft:#1c3045; --ok:#6cc391; --ok-soft:#173226; --warn:#e3a95b; --warn-soft:#3a2b16; --bad:#ef8d80; --bad-soft:#3d1f1b;
+  --c1:#4e93dc; --c2:#c07f22; --plan:#7b8794; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --paper:#11171d; --sheet:#18212a; --ink:#e3e9ef; --muted:#97a4b1; --rule:#2c3946; --rule-strong:#475766;
-  --accent:#7fb2e0; --accent-soft:#1c3045; --ok:#6cc391; --ok-soft:#173226; --warn:#e3a95b; --warn-soft:#3a2b16; --bad:#ef8d80; --bad-soft:#3d1f1b; color-scheme:dark}
+  --paper:#11171d; --sheet:#18212a; --ink:#e3e9ef; --muted:#97a4b1; --rule:#2c3946; --rule-strong:#475766; --grid:#24303b;
+  --accent:#7fb2e0; --accent-soft:#1c3045; --ok:#6cc391; --ok-soft:#173226; --warn:#e3a95b; --warn-soft:#3a2b16; --bad:#ef8d80; --bad-soft:#3d1f1b;
+  --c1:#4e93dc; --c2:#c07f22; --plan:#7b8794; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-td.no{white-space:nowrap}
 html,body{margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 header{border-bottom:1px solid var(--rule);background:var(--sheet)}
 .head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;padding-block:22px 16px}
 .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted)}
@@ -42,20 +44,22 @@ button{font:inherit;cursor:pointer}
 .btn-primary:hover{color:var(--sheet);filter:brightness(1.08)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-nav.tabs{display:flex;gap:4px;overflow-x:auto}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
 nav.tabs button{background:none;border:none;border-bottom:3px solid transparent;padding:10px 14px;color:var(--muted);font-size:15px;white-space:nowrap}
 nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
 main{padding-block:24px 48px}
 section[role="tabpanel"]{display:flex;flex-direction:column;gap:20px}
-.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;min-width:0}
 .sheet-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;padding:14px 18px;border-bottom:1px solid var(--rule)}
 h2{font-family:var(--display);font-size:18px;margin:0}
 .hint{font-size:13px;color:var(--muted)}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
 .kpi{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .kpi .k{font-size:13px;color:var(--muted)}
 .kpi .v{font-family:var(--mono);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .kpi .s{font-size:12px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:880px){.grid2{grid-template-columns:minmax(0,1fr)}}
 .scroll{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{padding:9px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:middle}
@@ -63,6 +67,7 @@ th{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.04em;white-
 tbody tr:last-child td{border-bottom:none}
 td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 td.c,th.c{text-align:center}
+td.no{white-space:nowrap}
 tfoot td{border-top:2px solid var(--rule-strong);border-bottom:none;font-weight:700}
 .bar{position:relative;height:8px;background:var(--accent-soft);border-radius:4px;min-width:90px;overflow:hidden}
 .bar>span{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:4px}
@@ -70,8 +75,9 @@ tfoot td{border-top:2px solid var(--rule-strong);border-bottom:none;font-weight:
 .p-none{background:var(--accent-soft);color:var(--accent)}
 .p-part{background:var(--warn-soft);color:var(--warn)}
 .p-done{background:var(--ok-soft);color:var(--ok)}
+.p-late{background:var(--bad-soft);color:var(--bad)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 18px}
-.chip{border:1px solid var(--rule-strong);background:var(--sheet);color:var(--ink);border-radius:4px;padding:8px 14px;text-align:left;display:flex;flex-direction:column;gap:0;min-width:150px}
+.chip{border:1px solid var(--rule-strong);background:var(--sheet);color:var(--ink);border-radius:4px;padding:8px 14px;text-align:left;display:flex;flex-direction:column;min-width:150px}
 .chip small{color:var(--muted);font-size:12px}
 .chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
 tr.partial td{background:var(--warn-soft)}
@@ -101,8 +107,31 @@ input.pct[aria-invalid="true"]{border-color:var(--bad);background:var(--bad-soft
 .note{font-size:13px;color:var(--muted);border-left:3px solid var(--rule-strong);padding:4px 12px;margin:0}
 footer{border-top:1px solid var(--rule);padding-block:18px 28px;font-size:13px;color:var(--muted)}
 footer a{color:var(--accent)}
-.legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-@media (prefers-reduced-motion:no-preference){.bar>span{transition:width .4s ease}}
+/* funding gauges */
+.gauges{display:flex;flex-direction:column;gap:16px;padding:16px 18px}
+.gauge{display:flex;flex-direction:column;gap:6px}
+.gauge .row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px}
+.gauge .row b{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums}
+.gbar{height:12px;border-radius:4px;background:var(--grid);overflow:hidden;position:relative}
+.gbar>span{position:absolute;inset:0 auto 0 0;border-radius:4px}
+/* charts */
+.chart{position:relative;padding:8px 12px 12px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted);padding:0 18px 4px}
+.sw{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.sw.box{height:10px;width:10px;border-radius:2px}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--sheet);font-size:12px;line-height:1.5;padding:6px 10px;border-radius:4px;white-space:nowrap;transform:translate(-50%,-100%);z-index:2}
+.tip b{font-family:var(--mono);font-weight:500}
+/* alerts */
+.alerts{list-style:none;margin:0;padding:6px 18px 14px;display:flex;flex-direction:column}
+.alerts li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--rule)}
+.alerts li:last-child{border-bottom:none}
+.alerts .amt{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:480px){.alerts li{grid-template-columns:auto minmax(0,1fr)}.alerts .amt{grid-column:2}}
+table.monthly td.cur,table.monthly th.cur{background:var(--accent-soft)}
+table.monthly th.grp{text-align:center;border-bottom:1px solid var(--rule)}
+@media (prefers-reduced-motion:no-preference){.bar>span,.gbar>span{transition:width .4s ease}}
 </style>
 </head>
 <body>
@@ -117,22 +146,46 @@ footer a{color:var(--accent)}
   </div>
   <div class="wrap">
     <nav class="tabs" role="tablist" aria-label="功能">
-      <button role="tab" id="t-overview" aria-controls="p-overview" aria-selected="true">計價統整總覽</button>
+      <button role="tab" id="t-dash" aria-controls="p-dash" aria-selected="true">業主戰情看板</button>
       <button role="tab" id="t-entry" aria-controls="p-entry" aria-selected="false">請款作業</button>
+      <button role="tab" id="t-overview" aria-controls="p-overview" aria-selected="false">承包商計價進度</button>
+      <button role="tab" id="t-monthly" aria-controls="p-monthly" aria-selected="false">月別計價統整</button>
       <button role="tab" id="t-records" aria-controls="p-records" aria-selected="false">請款紀錄</button>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <!-- 計價統整總覽 -->
-  <section role="tabpanel" id="p-overview" aria-labelledby="t-overview">
-    <div class="kpis" id="kpis"></div>
-    <div class="sheet">
-      <div class="sheet-head"><h2>各承包商計價進度</h2><span class="hint">已請款依每期請款明細即時加總</span></div>
-      <div class="scroll"><table id="ovTable"></table></div>
+  <!-- 業主戰情看板 -->
+  <section role="tabpanel" id="p-dash" aria-labelledby="t-dash">
+    <div class="kpis" id="dKpis"></div>
+    <div class="grid2">
+      <div class="sheet">
+        <div class="sheet-head"><h2>資金水位</h2><span class="hint">依合約 70% 建融、30% 自籌</span></div>
+        <div class="gauges" id="gauges"></div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-head"><h2>待處理提醒</h2><span class="hint" id="alertHint"></span></div>
+        <ul class="alerts" id="alerts"></ul>
+      </div>
     </div>
-    <p class="note">融資撥款與自籌款依合約約定 70%／30% 拆分。期別狀態：<span class="pill p-done">已請滿</span> <span class="pill p-part">部分請款</span> <span class="pill p-none">未請款</span></p>
+    <div class="sheet">
+      <div class="sheet-head"><h2>累計撥款 S 曲線：計畫與實際</h2><span class="hint">實際依撥款月份累計；計畫依各期預計完成月</span></div>
+      <div class="legend"><span><span class="sw" style="background:var(--c1)"></span>實際累計撥款</span><span><span class="sw" style="background:var(--plan)"></span>計畫累計（虛線）</span></div>
+      <div class="chart" id="sCurve"></div>
+    </div>
+    <div class="grid2">
+      <div class="sheet">
+        <div class="sheet-head"><h2>每月撥款金額</h2><span class="hint">建融與自籌堆疊</span></div>
+        <div class="legend"><span><span class="sw box" style="background:var(--c1)"></span>建融撥款 70%</span><span><span class="sw box" style="background:var(--c2)"></span>自籌款 30%</span></div>
+        <div class="chart" id="mBars"></div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-head"><h2>未來 3 個月資金需求</h2><span class="hint">逾期未請併入本月</span></div>
+        <div class="scroll"><table id="forecast"></table></div>
+      </div>
+    </div>
+    <p class="note" id="ruleNote"></p>
   </section>
 
   <!-- 請款作業 -->
@@ -142,7 +195,7 @@ footer a{color:var(--accent)}
       <div class="chips" id="chips"></div>
     </div>
     <div class="entry-grid">
-      <div class="sheet" style="min-width:0">
+      <div class="sheet">
         <div class="sheet-head"><h2>2. 勾選本次請款期別</h2><span class="hint" id="stageHint"></span></div>
         <div id="stageArea"></div>
       </div>
@@ -152,12 +205,13 @@ footer a{color:var(--accent)}
           <dt>請款單號</dt><dd id="sNo">—</dd>
           <dt>勾選期別</dt><dd id="sCount">0 期</dd>
           <dt>本次請款合計</dt><dd class="big" id="sTotal">0</dd>
-          <dt>融資撥款 70%</dt><dd id="sLoan">0</dd>
+          <dt>建融撥款 70%</dt><dd id="sLoan">0</dd>
           <dt>自籌款 30%</dt><dd id="sOwn">0</dd>
+          <dt>預計撥款日</dt><dd id="sPay">—</dd>
           <dt>請款後累計</dt><dd id="sCum">0</dd>
         </dl>
         <div class="fields">
-          <label for="fDate">請款日期<input type="date" id="fDate"></label>
+          <label for="fDate">申請日期<input type="date" id="fDate"></label>
           <label for="fInv">發票號碼（選填）<input type="text" id="fInv" placeholder="例：AB12345678" maxlength="10"></label>
           <div><span class="hint">請款項目說明（自動產生）</span><div class="desc" id="sDesc">尚未勾選期別</div></div>
         </div>
@@ -165,6 +219,24 @@ footer a{color:var(--accent)}
         <div class="confirm" id="confirmBox" hidden></div>
       </aside>
     </div>
+  </section>
+
+  <!-- 承包商計價進度 -->
+  <section role="tabpanel" id="p-overview" aria-labelledby="t-overview" hidden>
+    <div class="sheet">
+      <div class="sheet-head"><h2>各承包商計價進度</h2><span class="hint">已請款依每期請款明細即時加總</span></div>
+      <div class="scroll"><table id="ovTable"></table></div>
+    </div>
+    <p class="note">期別狀態：<span class="pill p-done">已請滿</span> <span class="pill p-part">部分請款</span> <span class="pill p-none">未請款</span></p>
+  </section>
+
+  <!-- 月別計價統整 -->
+  <section role="tabpanel" id="p-monthly" aria-labelledby="t-monthly" hidden>
+    <div class="sheet">
+      <div class="sheet-head"><h2>月別計價統整表</h2><span class="hint">依撥款月份彙總；請款單送出後自動更新</span></div>
+      <div class="scroll"><table class="monthly" id="monthTable"></table></div>
+    </div>
+    <p class="note">撥款規則：每月 10 日（含）前提出請款，當月 20 日撥款；10 日後提出，順延至次月 20 日撥款。</p>
   </section>
 
   <!-- 請款紀錄 -->
@@ -179,7 +251,7 @@ footer a{color:var(--accent)}
 </main>
 
 <footer class="wrap">
-  <p style="margin:0 0 6px">示範資料（建案、承包商、金額）皆為虛構。原系統以 Google Apps Script＋Google Sheets 開發，用於建案業主端的工程款請款管理。</p>
+  <p style="margin:0 0 6px">示範資料（建案、承包商、金額、日期）皆為虛構。原系統以 Google Apps Script＋Google Sheets 開發，用於建案業主端的工程款請款與資金管理。</p>
   <p style="margin:0">開發：張哲銘 · <a href="../">回到個人網站</a></p>
 </footer>
 <div class="toast" id="toast" role="status" hidden></div>
@@ -187,9 +259,11 @@ footer a{color:var(--accent)}
 <script>
 (function(){
 'use strict';
-// ---------- 示範資料（皆為虛構） ----------
+// ================= 示範資料（皆為虛構） =================
 var PROJECT = '示範建案｜地上 15 層、地下 3 層 RC 集合住宅（虛構資料）';
 var LOAN = 0.7;
+var BASE = '2026-10-15';            // 資料基準日（示範固定）
+var CHART_FROM = '2026-01', CHART_TO = '2027-12';
 var CONTRACTORS = [
   {id:'C001', name:'宏築營造股份有限公司', short:'宏築營造', type:'建築', amt:620000000, prefix:'HZ'},
   {id:'C002', name:'信達機電工程股份有限公司', short:'信達機電', type:'機電', amt:110000000, prefix:'XD'},
@@ -198,6 +272,7 @@ var CONTRACTORS = [
   {id:'C005', name:'森居室內裝修股份有限公司', short:'森居裝修', type:'裝修', amt:60000000, prefix:'SJ'}
 ];
 function floors(from,to,pct){var a=[];for(var f=from;f<=to;f++)a.push([f+'F 樓版混凝土澆置完成',pct]);return a;}
+// [工程項目, 付款比例%]
 var STAGE_DEF = {
   C001:[['營造合約簽訂完成',10],['放樣勘驗申報完成',2],['基樁施工完成',4],['連續壁施工完成 1/2',4],['連續壁全部完成',4],['開挖及支撐架設完成',4],['筏式基礎底版澆置完成',4],['B3 樓版混凝土澆置完成',3],['B2 樓版混凝土澆置完成',3],['B1 樓版混凝土澆置完成',3],['1F 樓版混凝土澆置完成',4]]
         .concat(floors(2,15,2.5)).concat([['屋突層結構完成',2],['外牆磁磚施作完成',5],['門窗安裝完成',4],['取得使用執照',5],['交屋保留款',4]]),
@@ -206,181 +281,284 @@ var STAGE_DEF = {
   C004:[['燈具合約簽訂完成',10],['1–5F 燈具配管完成',15],['6–10F 燈具配管完成',15],['11–15F 燈具配管完成',15],['燈具安裝完成',30],['驗收及保留款',15]],
   C005:[['裝修合約簽訂完成',10],['大廳隔間完成',15],['大廳天花完成',15],['大廳地坪完成',15],['梯廳裝修完成',15],['公設空間裝修完成',15],['驗收完成',10],['保留款',5]]
 };
-// 種子請款紀錄：[單號, 日期(西元), 承包商, [[期別, 本次成數%], ...], 發票]
+// 各期預計完成月（依序對應上表）
+var PLAN = {
+  C001:['2026-01','2026-02','2026-02','2026-03','2026-04','2026-05','2026-05','2026-06','2026-06','2026-07','2026-07','2026-08','2026-08','2026-09','2026-09','2026-09','2026-10','2026-11','2026-11','2026-12','2027-01','2027-01','2027-02','2027-03','2027-03','2027-04','2027-06','2027-07','2027-10','2027-12'],
+  C002:['2026-02','2026-05','2026-08','2026-09','2026-11','2026-10','2026-12','2027-02','2027-05','2027-08','2027-10','2027-12'],
+  C003:['2026-04','2027-01','2027-05','2027-08','2027-10','2027-12'],
+  C004:['2026-04','2026-04','2026-10','2027-02','2027-07','2027-12'],
+  C005:['2026-07','2027-03','2027-04','2027-05','2027-06','2027-08','2027-10','2027-12']
+};
+// 種子請款紀錄：[單號, 申請日期, 承包商, [[期別, 本次成數%], ...], 發票號碼]
 var SEED = [
-  ['HZ-001','2025-03-20','C001',[[1,100]],'HZ00000101'],
-  ['HZ-002','2025-04-21','C001',[[2,100],[3,100]],'HZ00000102'],
-  ['HZ-003','2025-05-20','C001',[[4,100]],'HZ00000103'],
-  ['HZ-004','2025-06-20','C001',[[5,100],[6,80]],'HZ00000104'],
-  ['HZ-005','2025-07-21','C001',[[6,20],[7,100]],'HZ00000105'],
-  ['HZ-006','2025-08-20','C001',[[8,100],[9,100]],'HZ00000106'],
-  ['HZ-007','2025-09-22','C001',[[10,100],[11,90]],'HZ00000107'],
-  ['HZ-008','2025-10-20','C001',[[11,10],[12,100],[13,100]],'HZ00000108'],
-  ['HZ-009','2025-11-20','C001',[[14,100],[15,60]],'HZ00000109'],
-  ['XD-001','2025-04-21','C002',[[1,100]],'XD00000101'],
-  ['XD-002','2025-08-20','C002',[[2,100]],'XD00000102'],
-  ['XD-003','2025-10-20','C002',[[3,100],[4,50]],'XD00000103'],
-  ['AS-001','2025-06-20','C003',[[1,100]],'AS00000101'],
-  ['MG-001','2025-06-20','C004',[[1,100],[2,100]],'MG00000101'],
-  ['SJ-001','2025-09-22','C005',[[1,100]],'SJ00000101']
+  ['HZ-001','2026-01-08','C001',[[1,100]],'HZ00000101'],
+  ['HZ-002','2026-02-06','C001',[[2,100],[3,100]],'HZ00000102'],
+  ['HZ-003','2026-03-16','C001',[[4,100]],'HZ00000103'],
+  ['HZ-004','2026-04-09','C001',[[5,100],[6,80]],'HZ00000104'],
+  ['HZ-005','2026-05-08','C001',[[6,20],[7,100]],'HZ00000105'],
+  ['HZ-006','2026-06-05','C001',[[8,100],[9,100]],'HZ00000106'],
+  ['HZ-007','2026-07-07','C001',[[10,100],[11,90]],'HZ00000107'],
+  ['HZ-008','2026-08-14','C001',[[11,10],[12,100],[13,100]],'HZ00000108'],
+  ['HZ-009','2026-09-08','C001',[[14,100],[15,60]],'HZ00000109'],
+  ['XD-001','2026-02-05','C002',[[1,100]],'XD00000101'],
+  ['XD-002','2026-05-12','C002',[[2,100]],'XD00000102'],
+  ['XD-003','2026-09-04','C002',[[3,100],[4,50]],'XD00000103'],
+  ['AS-001','2026-04-09','C003',[[1,100]],'AS00000101'],
+  ['MG-001','2026-04-09','C004',[[1,100],[2,100]],'MG00000101'],
+  ['SJ-001','2026-07-14','C005',[[1,100]],'SJ00000101']
 ];
 
-// ---------- 衍生資料 ----------
-var cMap = {}; CONTRACTORS.forEach(function(c){cMap[c.id]=c;});
-var STAGES = {}; // cid -> [{no,item,pct,amount}]
+// ================= 衍生資料 =================
+var cMap={}; CONTRACTORS.forEach(function(c){cMap[c.id]=c;});
+var TOTAL = CONTRACTORS.reduce(function(a,c){return a+c.amt;},0);
+var STAGES={};
 CONTRACTORS.forEach(function(c){
-  STAGES[c.id] = STAGE_DEF[c.id].map(function(s,i){return {no:i+1,item:s[0],pct:s[1],amount:Math.round(c.amt*s[1]/100)};});
+  STAGES[c.id]=STAGE_DEF[c.id].map(function(s,i){return {no:i+1,item:s[0],pct:s[1],amount:Math.round(c.amt*s[1]/100),plan:PLAN[c.id][i]};});
 });
 function stageOf(cid,no){return STAGES[cid][no-1];}
 function lineAmt(cid,no,claimPct){return Math.round(stageOf(cid,no).amount*claimPct/100);}
+// 撥款規則：10 日（含）前申請 → 當月 20 日；10 日後 → 次月 20 日
+function payMonthOf(iso){var y=+iso.slice(0,4),m=+iso.slice(5,7),d=+iso.slice(8,10);if(d>10){m++;if(m>12){m=1;y++;}}return y+'-'+String(m).padStart(2,'0');}
 function buildClaim(no,date,cid,lines,inv){
-  var details = lines.map(function(l){return {stage:l[0],pct:l[1],amount:lineAmt(cid,l[0],l[1])};});
-  var total = details.reduce(function(a,d){return a+d.amount;},0);
-  var loan = Math.round(total*LOAN);
-  return {no:no,date:date,cid:cid,details:details,total:total,loan:loan,own:total-loan,invoice:inv||''};
+  var details=lines.map(function(l){return {stage:l[0],pct:l[1],amount:lineAmt(cid,l[0],l[1])};});
+  var total=details.reduce(function(a,d){return a+d.amount;},0), loan=Math.round(total*LOAN);
+  return {no:no,date:date,pay:payMonthOf(date),cid:cid,details:details,total:total,loan:loan,own:total-loan,invoice:inv||''};
 }
 function seedClaims(){return SEED.map(function(s){return buildClaim(s[0],s[1],s[2],s[3],s[4]);});}
 
-// ---------- 狀態（存在瀏覽器） ----------
-var KEY='ccm-payment-demo-v1';
-var claims;
+// ================= 狀態（存在瀏覽器） =================
+var KEY='ccm-payment-demo-v2', claims;
 function load(){
-  try{var raw=localStorage.getItem(KEY); if(raw){var d=JSON.parse(raw); if(Array.isArray(d)&&d.length) return d;}}catch(e){}
+  try{var raw=localStorage.getItem(KEY);if(raw){var d=JSON.parse(raw);if(Array.isArray(d)&&d.length)return d.map(function(c){c.pay=c.pay||payMonthOf(c.date);return c;});}}catch(e){}
   return seedClaims();
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(claims));}catch(e){}}
-claims = load();
-
-// 每期累計已請成數（%）
-function claimedPctMap(cid){
-  var m={};
-  claims.forEach(function(c){if(c.cid!==cid)return; c.details.forEach(function(d){m[d.stage]=(m[d.stage]||0)+d.pct;});});
-  return m;
-}
+claims=load();
+function claimedPctMap(cid){var m={};claims.forEach(function(c){if(c.cid!==cid)return;c.details.forEach(function(d){m[d.stage]=(m[d.stage]||0)+d.pct;});});return m;}
 function claimedTotal(cid){return claims.filter(function(c){return c.cid===cid;}).reduce(function(a,c){return a+c.total;},0);}
 
-// ---------- 格式 ----------
+// ================= 格式 =================
 function money(n){return Math.round(n).toLocaleString('zh-TW');}
-function roc(iso){var p=iso.split('-');return (Number(p[0])-1911)+'/'+p[1]+'/'+p[2];}
-function todayISO(){var d=new Date();var z=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
+function wan(n){return (n/1e8>=1?(Math.round(n/1e6)/100).toLocaleString('zh-TW')+' 億':Math.round(n/1e4).toLocaleString('zh-TW')+' 萬');}
+function roc(iso){var p=iso.split('-');return (Number(p[0])-1911)+'/'+p[1]+(p[2]?'/'+p[2]:'');}
+function todayISO(){var d=new Date(),z=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
 function esc(s){return String(s).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
 function pctTxt(p){return (Math.round(p*100)/100)+'%';}
+function addMonth(ym,k){var y=+ym.slice(0,4),m=+ym.slice(5,7)+k;while(m>12){m-=12;y++;}while(m<1){m+=12;y--;}return y+'-'+String(m).padStart(2,'0');}
+function monthsBetween(a,b){var r=[],x=a;while(x<=b){r.push(x);x=addMonth(x,1);}return r;}
 var toastTimer;
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.hidden=true;},2800);}
 
-// ---------- 分頁 ----------
-var tabs=['overview','entry','records'];
+// ================= 分頁 =================
+var tabs=['dash','entry','overview','monthly','records'];
+var renders={dash:renderDash,entry:renderEntry,overview:renderOverview,monthly:renderMonthly,records:renderRecords};
+function currentTab(){return tabs.filter(function(t){return document.getElementById('t-'+t).getAttribute('aria-selected')==='true';})[0];}
 function showTab(name){
-  tabs.forEach(function(t){
-    document.getElementById('t-'+t).setAttribute('aria-selected',t===name?'true':'false');
-    document.getElementById('p-'+t).hidden = t!==name;
-  });
-  if(name==='overview')renderOverview();
-  if(name==='records')renderRecords();
-  if(name==='entry')renderEntry();
+  tabs.forEach(function(t){document.getElementById('t-'+t).setAttribute('aria-selected',t===name?'true':'false');document.getElementById('p-'+t).hidden=t!==name;});
+  renders[name]();
 }
 tabs.forEach(function(t){document.getElementById('t-'+t).addEventListener('click',function(){showTab(t);});});
 
-// ---------- 總覽 ----------
+// ================= 戰情看板 =================
+function baseMonth(){return BASE.slice(0,7);}
+function lateAndOpen(){
+  // 回傳所有未請滿期別，標記是否逾期
+  var out=[];
+  CONTRACTORS.forEach(function(c){var m=claimedPctMap(c.id);STAGES[c.id].forEach(function(s){var done=m[s.no]||0;if(done<100)out.push({c:c,s:s,done:done,rem:Math.round(s.amount*(100-done)/100),late:s.plan<baseMonth()});});});
+  return out;
+}
+function renderDash(){
+  var claimed=claims.reduce(function(a,c){return a+c.total;},0), loanUsed=claims.reduce(function(a,c){return a+c.loan;},0), ownUsed=claimed-loanUsed;
+  var loanCap=Math.round(TOTAL*LOAN), ownCap=TOTAL-loanCap, remain=TOTAL-claimed;
+  var planToDate=0; CONTRACTORS.forEach(function(c){STAGES[c.id].forEach(function(s){if(s.plan<=baseMonth())planToDate+=s.amount;});});
+  var gap=claimed-planToDate;
+  document.getElementById('dKpis').innerHTML=
+    kpi('合約總額',money(TOTAL),CONTRACTORS.length+' 家承包商、'+Object.keys(STAGES).reduce(function(a,k){return a+STAGES[k].length;},0)+' 個付款期別')+
+    kpi('累計撥款',money(claimed),'實際進度 '+(claimed/TOTAL*100).toFixed(1)+'%，計畫 '+(planToDate/TOTAL*100).toFixed(1)+'%')+
+    kpi('與計畫差異',(gap<0?'−':'+')+money(Math.abs(gap)),gap<0?'實際撥款落後計畫':'實際撥款超前計畫')+
+    kpi('剩餘工程需備自有資金',money(Math.round(remain*(1-LOAN))),'剩餘未請 '+money(remain)+' × 30%');
+  document.getElementById('gauges').innerHTML=gauge('建融額度動用',loanUsed,loanCap,'var(--c1)')+gauge('自籌款已支付',ownUsed,ownCap,'var(--c2)')+gauge('全案撥款進度',claimed,TOTAL,'var(--accent)');
+  // alerts
+  var open=lateAndOpen().filter(function(o){return o.late;});
+  var partial=lateAndOpen().filter(function(o){return !o.late&&o.done>0;});
+  var items=open.map(function(o){return {cls:'p-late',tag:'逾期未請',txt:o.c.short+' 第'+o.s.no+'期 '+o.s.item+(o.done>0?'（已請 '+pctTxt(o.done)+'）':''),sub:'預計 '+roc(o.s.plan)+' 完成',amt:o.rem};})
+    .concat(partial.map(function(o){return {cls:'p-part',tag:'部分請款',txt:o.c.short+' 第'+o.s.no+'期 '+o.s.item+'（已請 '+pctTxt(o.done)+'）',sub:'預計 '+roc(o.s.plan)+' 完成',amt:o.rem};}));
+  document.getElementById('alertHint').textContent=items.length?'共 '+items.length+' 項，金額為尚未請款部分':'';
+  document.getElementById('alerts').innerHTML=items.length?items.map(function(i){return '<li><span class="pill '+i.cls+'">'+i.tag+'</span><span>'+esc(i.txt)+'<br><span class="hint">'+i.sub+'</span></span><span class="amt">'+money(i.amt)+'</span></li>';}).join(''):'<li class="hint">目前沒有逾期或未結清的期別。</li>';
+  // forecast
+  var bm=baseMonth(), rows=[0,1,2].map(function(k){return {ym:addMonth(bm,k),n:0,amt:0};});
+  lateAndOpen().forEach(function(o){var ym=o.s.plan<bm?bm:o.s.plan;rows.forEach(function(r){if(r.ym===ym){r.n++;r.amt+=o.rem;}});});
+  var ft=rows.reduce(function(a,r){return a+r.amt;},0);
+  document.getElementById('forecast').innerHTML='<thead><tr><th>撥款月</th><th class="num">期別數</th><th class="num">預估請款</th><th class="num">建融 70%</th><th class="num">自籌 30%</th></tr></thead><tbody>'+
+    rows.map(function(r,i){var l=Math.round(r.amt*LOAN);return '<tr><td>'+roc(r.ym)+(i===0?' <span class="hint">含逾期</span>':'')+'</td><td class="num">'+r.n+'</td><td class="num">'+money(r.amt)+'</td><td class="num">'+money(l)+'</td><td class="num">'+money(r.amt-l)+'</td></tr>';}).join('')+
+    '</tbody><tfoot><tr><td>3 個月合計</td><td></td><td class="num">'+money(ft)+'</td><td class="num">'+money(Math.round(ft*LOAN))+'</td><td class="num">'+money(ft-Math.round(ft*LOAN))+'</td></tr></tfoot>';
+  document.getElementById('ruleNote').textContent='資料基準日 '+roc(BASE)+'。撥款規則：每月 10 日（含）前提出請款，當月 20 日撥款；10 日後提出，順延至次月 20 日。';
+  drawCharts();
+}
+function kpi(k,v,s){return '<div class="kpi"><span class="k">'+k+'</span><span class="v">'+v+'</span><span class="s">'+s+'</span></div>';}
+function gauge(label,used,cap,color){var p=cap?used/cap*100:0;return '<div class="gauge"><div class="row"><span>'+label+'</span><span><b>'+money(used)+'</b> / '+money(cap)+'（'+p.toFixed(1)+'%）</span></div><div class="gbar" role="img" aria-label="'+label+' '+p.toFixed(1)+'%"><span style="width:'+Math.min(100,p)+'%;background:'+color+'"></span></div><div class="hint">剩餘 '+money(cap-used)+'</div></div>';}
+
+// ---------- 圖表（純 SVG） ----------
+function niceMax(v){if(v<=0)return 1;var e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e;var n=f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10;return n*e;}
+function monthSeries(){
+  var lastPay=claims.reduce(function(a,c){return c.pay>a?c.pay:a;},CHART_FROM);
+  var to=lastPay>CHART_TO?lastPay:CHART_TO, months=monthsBetween(CHART_FROM,to);
+  var actM=months.map(function(){return {loan:0,own:0};}), plan=months.map(function(){return 0;});
+  claims.forEach(function(c){var i=months.indexOf(c.pay);if(i>=0){actM[i].loan+=c.loan;actM[i].own+=c.own;}});
+  CONTRACTORS.forEach(function(c){STAGES[c.id].forEach(function(s){var i=months.indexOf(s.plan);if(i>=0)plan[i]+=s.amount;});});
+  var cumA=[],cumP=[],a=0,p=0,lastIdx=months.indexOf(lastPay);
+  months.forEach(function(m,i){a+=actM[i].loan+actM[i].own;p+=plan[i];cumP.push(p);cumA.push(i<=lastIdx?a:null);});
+  return {months:months,actM:actM,cumA:cumA,cumP:cumP};
+}
+var W=720,H=280,PAD={l:58,r:16,t:16,b:30};
+function dims(el){W=Math.max(300,Math.round(el.clientWidth-24));H=W<520?220:280;}
+function axes(months,max,fmt){
+  var need=Math.ceil(52/((W-PAD.l-PAD.r)/months.length)), step=[1,2,3,6,12].filter(function(k){return k>=need;})[0]||12;
+  var iw=W-PAD.l-PAD.r, ih=H-PAD.t-PAD.b, g='';
+  for(var k=0;k<=4;k++){var v=max*k/4,y=PAD.t+ih-ih*k/4;g+='<line x1="'+PAD.l+'" x2="'+(W-PAD.r)+'" y1="'+y+'" y2="'+y+'" stroke="var(--grid)" stroke-width="1"/><text x="'+(PAD.l-8)+'" y="'+(y+4)+'" text-anchor="end">'+fmt(v)+'</text>';}
+  months.forEach(function(m,i){if(i%step===0){var x=PAD.l+iw*(i+0.5)/months.length;g+='<text x="'+x+'" y="'+(H-8)+'" text-anchor="middle">'+roc(m)+'</text>';}});
+  return g;
+}
+function yLbl(v){return v===0?'0':(v/1e8).toFixed(v<1e8?2:1).replace(/\.?0+$/,'')+' 億';}
+function yLblM(v){return v===0?'0':Math.round(v/1e4).toLocaleString('zh-TW')+' 萬';}
+function drawCharts(){
+  var d=monthSeries(), n=d.months.length, el=document.getElementById('sCurve'); dims(el);
+  var iw=W-PAD.l-PAD.r, ih=H-PAD.t-PAD.b;
+  var X=function(i){return PAD.l+iw*(i+0.5)/n;};
+  // S 曲線
+  var max=niceMax(TOTAL), Y=function(v){return PAD.t+ih-ih*v/max;};
+  var pathP=d.cumP.map(function(v,i){return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);}).join(' ');
+  var pts=d.cumA.map(function(v,i){return v==null?null:[X(i),Y(v)];}).filter(Boolean);
+  var pathA=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+  var last=pts[pts.length-1], lastI=d.cumA.filter(function(v){return v!=null;}).length-1;
+  var bmI=d.months.indexOf(baseMonth());
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="計畫與實際累計撥款 S 曲線">'+axes(d.months,max,yLbl)+
+    (bmI>=0?'<line x1="'+X(bmI)+'" x2="'+X(bmI)+'" y1="'+PAD.t+'" y2="'+(PAD.t+ih)+'" stroke="var(--rule-strong)" stroke-dasharray="2 3"/><text x="'+(X(bmI)+4)+'" y="'+(PAD.t+10)+'">基準日</text>':'')+
+    '<path d="'+pathP+'" fill="none" stroke="var(--plan)" stroke-width="2" stroke-dasharray="6 4"/>'+
+    '<path d="'+pathA+'" fill="none" stroke="var(--c1)" stroke-width="2"/>'+
+    (last?'<circle cx="'+last[0]+'" cy="'+last[1]+'" r="4.5" fill="var(--c1)" stroke="var(--sheet)" stroke-width="2"/><text x="'+(last[0]-8)+'" y="'+(last[1]-10)+'" text-anchor="end" style="fill:var(--ink)">'+yLbl(d.cumA[lastI])+'</text>':'')+
+    '<line class="xh" x1="0" x2="0" y1="'+PAD.t+'" y2="'+(PAD.t+ih)+'" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>'+
+    '<rect x="'+PAD.l+'" y="'+PAD.t+'" width="'+iw+'" height="'+ih+'" fill="transparent" class="hit"/></svg><div class="tip" hidden></div>';
+  el.innerHTML=svg;
+  hover(el,W,H,n,X,function(i){return '<div>'+roc(d.months[i])+'</div><div>實際累計 <b>'+(d.cumA[i]==null?'—':money(d.cumA[i]))+'</b></div><div>計畫累計 <b>'+money(d.cumP[i])+'</b></div>';},function(i){return Y(d.cumA[i]==null?d.cumP[i]:Math.max(d.cumA[i],d.cumP[i]));});
+  // 每月撥款堆疊（只畫到最後撥款月與基準月之後）
+  var el2=document.getElementById('mBars'); dims(el2);
+  var endM=d.months.reduce(function(a,m,i){return (d.actM[i].loan+d.actM[i].own)?m:a;},baseMonth()); if(endM<baseMonth())endM=baseMonth();
+  var nb=d.months.indexOf(endM)+1, b={months:d.months.slice(0,nb),actM:d.actM.slice(0,nb)}, iw2=W-PAD.l-PAD.r, ih2=H-PAD.t-PAD.b;
+  var X2=function(i){return PAD.l+iw2*(i+0.5)/nb;};
+  var mx=niceMax(Math.max.apply(null,b.actM.map(function(m){return m.loan+m.own;}).concat([1]))), Y2=function(v){return PAD.t+ih2-ih2*v/mx;};
+  var bw=Math.max(4,Math.min(36,iw2/nb-6)), bars='';
+  b.actM.forEach(function(m,i){if(!(m.loan+m.own))return;var x=X2(i)-bw/2,yl=Y2(m.loan),yo=Y2(m.loan+m.own);
+    bars+='<rect x="'+x+'" y="'+yl+'" width="'+bw+'" height="'+(PAD.t+ih2-yl)+'" fill="var(--c1)"/>'+
+          '<rect x="'+x+'" y="'+yo+'" width="'+bw+'" height="'+Math.max(0,yl-yo-2)+'" rx="2" fill="var(--c2)"/>';});
+  el2.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="每月撥款金額，建融與自籌堆疊">'+axes(b.months,mx,yLblM)+bars+
+    '<line class="xh" x1="0" x2="0" y1="'+PAD.t+'" y2="'+(PAD.t+ih2)+'" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>'+
+    '<rect x="'+PAD.l+'" y="'+PAD.t+'" width="'+iw2+'" height="'+ih2+'" fill="transparent" class="hit"/></svg><div class="tip" hidden></div>';
+  hover(el2,W,H,nb,X2,function(i){var m=b.actM[i];return '<div>'+roc(b.months[i])+' 撥款</div><div>建融 <b>'+money(m.loan)+'</b></div><div>自籌 <b>'+money(m.own)+'</b></div><div>合計 <b>'+money(m.loan+m.own)+'</b></div>';},function(i){var m=b.actM[i];return Y2(m.loan+m.own);});
+}
+function hover(el,W,H,n,X,html,yAt){
+  var svg=el.querySelector('svg'), hit=el.querySelector('.hit'), tip=el.querySelector('.tip'), xh=el.querySelector('.xh');
+  function move(ev){
+    var r=svg.getBoundingClientRect(), sx=W/r.width, px=(ev.clientX-r.left)*sx, iw=W-PAD.l-PAD.r;
+    var i=Math.max(0,Math.min(n-1,Math.floor((px-PAD.l)/iw*n)));
+    xh.setAttribute('x1',X(i));xh.setAttribute('x2',X(i));xh.setAttribute('visibility','visible');
+    tip.innerHTML=html(i);tip.hidden=false;
+    var er=el.getBoundingClientRect();
+    var left=r.left-er.left+X(i)/sx, top=r.top-er.top+Math.min(yAt(i),H-PAD.b)/sx-8;
+    tip.style.left=Math.max(70,Math.min(er.width-70,left))+'px';tip.style.top=Math.max(40,top)+'px';
+  }
+  function out(){tip.hidden=true;xh.setAttribute('visibility','hidden');}
+  hit.addEventListener('mousemove',move);hit.addEventListener('mouseleave',out);
+  hit.addEventListener('touchstart',function(e){move(e.touches[0]);},{passive:true});
+  hit.addEventListener('touchmove',function(e){move(e.touches[0]);},{passive:true});
+}
+
+// ================= 承包商計價進度 =================
 function renderOverview(){
-  var totalAmt=0,totalClaimed=0,stDone=0,stPart=0,stNone=0;
-  var rows = CONTRACTORS.map(function(c){
-    var claimed=claimedTotal(c.id), m=claimedPctMap(c.id), d=0,p=0,n=0;
-    STAGES[c.id].forEach(function(s){var v=m[s.no]||0; if(v>=100)d++; else if(v>0)p++; else n++;});
-    totalAmt+=c.amt; totalClaimed+=claimed; stDone+=d; stPart+=p; stNone+=n;
-    var prog=claimed/c.amt*100;
-    return '<tr><td><b>'+esc(c.short)+'</b><div class="hint">'+esc(c.type)+'工程</div></td>'+
-      '<td class="num">'+money(c.amt)+'</td><td class="num">'+money(claimed)+'</td><td class="num">'+money(c.amt-claimed)+'</td>'+
+  var totalClaimed=0,stDone=0,stPart=0,stNone=0;
+  var rows=CONTRACTORS.map(function(c){
+    var claimed=claimedTotal(c.id),m=claimedPctMap(c.id),d=0,p=0,n=0;
+    STAGES[c.id].forEach(function(s){var v=m[s.no]||0;if(v>=100)d++;else if(v>0)p++;else n++;});
+    totalClaimed+=claimed;stDone+=d;stPart+=p;stNone+=n;var prog=claimed/c.amt*100;
+    return '<tr><td><b>'+esc(c.short)+'</b><div class="hint">'+esc(c.type)+'工程</div></td><td class="num">'+money(c.amt)+'</td><td class="num">'+money(claimed)+'</td><td class="num">'+money(c.amt-claimed)+'</td>'+
       '<td style="min-width:140px"><div class="bar" role="img" aria-label="請款進度 '+prog.toFixed(1)+'%"><span style="width:'+Math.min(100,prog)+'%"></span></div><div class="hint" style="font-family:var(--mono)">'+prog.toFixed(1)+'%</div></td>'+
       '<td class="c"><span class="pill p-done">'+d+'</span> <span class="pill p-part">'+p+'</span> <span class="pill p-none">'+n+'</span></td></tr>';
   }).join('');
-  var prog=totalClaimed/totalAmt*100, loanClaimed=claims.reduce(function(a,c){return a+c.loan;},0);
   document.getElementById('ovTable').innerHTML='<thead><tr><th>承包商</th><th class="num">合約金額</th><th class="num">累計已請款</th><th class="num">剩餘未請款</th><th>請款進度</th><th class="c">期別狀態</th></tr></thead><tbody>'+rows+
-    '</tbody><tfoot><tr><td>全案合計</td><td class="num">'+money(totalAmt)+'</td><td class="num">'+money(totalClaimed)+'</td><td class="num">'+money(totalAmt-totalClaimed)+'</td><td class="num" style="text-align:left">'+prog.toFixed(1)+'%</td><td class="c" style="font-weight:400"><span class="pill p-done">'+stDone+'</span> <span class="pill p-part">'+stPart+'</span> <span class="pill p-none">'+stNone+'</span></td></tr></tfoot>';
-  document.getElementById('kpis').innerHTML=
-    kpi('合約總額',money(totalAmt),CONTRACTORS.length+' 家承包商、'+(stDone+stPart+stNone)+' 個付款期別')+
-    kpi('累計已請款',money(totalClaimed),'共 '+claims.length+' 張請款單')+
-    kpi('剩餘未請款',money(totalAmt-totalClaimed),'全案請款進度 '+prog.toFixed(1)+'%')+
-    kpi('融資／自籌已撥',money(loanClaimed)+' ／ '+money(totalClaimed-loanClaimed),'依 70%／30% 拆分');
+    '</tbody><tfoot><tr><td>全案合計</td><td class="num">'+money(TOTAL)+'</td><td class="num">'+money(totalClaimed)+'</td><td class="num">'+money(TOTAL-totalClaimed)+'</td><td class="num" style="text-align:left">'+(totalClaimed/TOTAL*100).toFixed(1)+'%</td><td class="c" style="font-weight:400"><span class="pill p-done">'+stDone+'</span> <span class="pill p-part">'+stPart+'</span> <span class="pill p-none">'+stNone+'</span></td></tr></tfoot>';
 }
-function kpi(k,v,s){return '<div class="kpi"><span class="k">'+k+'</span><span class="v">'+v+'</span><span class="s">'+s+'</span></div>';}
 
-// ---------- 請款作業 ----------
-var sel = {cid:'C001', picks:{}, showDone:false}; // picks: stageNo -> pct
-function nextNo(cid){
-  var c=cMap[cid], max=0;
-  claims.forEach(function(x){if(x.no.indexOf(c.prefix+'-')===0){var n=parseInt(x.no.split('-')[1],10);if(n>max)max=n;}});
-  return c.prefix+'-'+String(max+1).padStart(3,'0');
-}
-function renderEntry(){
-  document.getElementById('chips').innerHTML=CONTRACTORS.map(function(c){
-    var m=claimedPctMap(c.id), open=STAGES[c.id].filter(function(s){return (m[s.no]||0)<100;}).length;
-    return '<button type="button" class="chip" data-cid="'+c.id+'" aria-pressed="'+(c.id===sel.cid)+'"><b>'+esc(c.short)+'</b><small>'+esc(c.type)+' · 可請 '+open+' 期</small></button>';
+// ================= 月別計價統整 =================
+function renderMonthly(){
+  var pays=claims.map(function(c){return c.pay;}).sort(); if(!pays.length){document.getElementById('monthTable').innerHTML='<tbody><tr><td class="empty">尚無請款</td></tr></tbody>';return;}
+  var months=monthsBetween(pays[0],pays[pays.length-1]);
+  var head='<thead><tr><th rowspan="2">撥款月</th><th class="grp" colspan="'+CONTRACTORS.length+'">各承包商工程金額</th><th class="grp" colspan="3">當月合計</th><th class="grp" colspan="3">累計</th></tr><tr>'+
+    CONTRACTORS.map(function(c){return '<th class="num">'+esc(c.short)+'</th>';}).join('')+'<th class="num">工程金額</th><th class="num">建融</th><th class="num">自籌</th><th class="num">工程金額</th><th class="num">建融</th><th class="num">自籌</th></tr></thead>';
+  var cT=0,cL=0,cO=0,colSum={};
+  var body=months.map(function(ym){
+    var per={},t=0,l=0,o=0;
+    claims.forEach(function(c){if(c.pay!==ym)return;per[c.cid]=(per[c.cid]||0)+c.total;t+=c.total;l+=c.loan;o+=c.own;});
+    cT+=t;cL+=l;cO+=o;
+    CONTRACTORS.forEach(function(c){colSum[c.id]=(colSum[c.id]||0)+(per[c.id]||0);});
+    return '<tr><td class="no" style="font-family:var(--mono)">'+roc(ym)+'</td>'+CONTRACTORS.map(function(c){return '<td class="num">'+(per[c.id]?money(per[c.id]):'<span class="hint">—</span>')+'</td>';}).join('')+
+      '<td class="num cur">'+(t?money(t):'—')+'</td><td class="num">'+(l?money(l):'—')+'</td><td class="num">'+(o?money(o):'—')+'</td><td class="num">'+money(cT)+'</td><td class="num">'+money(cL)+'</td><td class="num">'+money(cO)+'</td></tr>';
   }).join('');
-  if(!document.getElementById('fDate').value)document.getElementById('fDate').value=todayISO();
-  renderStages(); renderSummary();
+  var foot='<tfoot><tr><td>合計</td>'+CONTRACTORS.map(function(c){return '<td class="num">'+money(colSum[c.id]||0)+'</td>';}).join('')+'<td class="num">'+money(cT)+'</td><td class="num">'+money(cL)+'</td><td class="num">'+money(cO)+'</td><td colspan="3"></td></tr></tfoot>';
+  document.getElementById('monthTable').innerHTML=head+'<tbody>'+body+'</tbody>'+foot;
 }
-document.getElementById('chips').addEventListener('click',function(e){
-  var b=e.target.closest('.chip'); if(!b)return;
-  if(b.dataset.cid!==sel.cid){sel.cid=b.dataset.cid; sel.picks={}; sel.showDone=false; hideConfirm();}
-  renderEntry();
-});
+
+// ================= 請款作業 =================
+var sel={cid:'C001',picks:{},showDone:false};
+function nextNo(cid){var c=cMap[cid],max=0;claims.forEach(function(x){if(x.no.indexOf(c.prefix+'-')===0){var n=parseInt(x.no.split('-')[1],10);if(n>max)max=n;}});return c.prefix+'-'+String(max+1).padStart(3,'0');}
+function renderEntry(){
+  document.getElementById('chips').innerHTML=CONTRACTORS.map(function(c){var m=claimedPctMap(c.id),open=STAGES[c.id].filter(function(s){return (m[s.no]||0)<100;}).length;
+    return '<button type="button" class="chip" data-cid="'+c.id+'" aria-pressed="'+(c.id===sel.cid)+'"><b>'+esc(c.short)+'</b><small>'+esc(c.type)+' · 可請 '+open+' 期</small></button>';}).join('');
+  if(!document.getElementById('fDate').value)document.getElementById('fDate').value=todayISO();
+  renderStages();renderSummary();
+}
+document.getElementById('chips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;if(b.dataset.cid!==sel.cid){sel.cid=b.dataset.cid;sel.picks={};sel.showDone=false;hideConfirm();}renderEntry();});
 function renderStages(){
-  var cid=sel.cid, m=claimedPctMap(cid), list=STAGES[cid];
-  var open=list.filter(function(s){return (m[s.no]||0)<100;}), done=list.filter(function(s){return (m[s.no]||0)>=100;});
+  var cid=sel.cid,m=claimedPctMap(cid),list=STAGES[cid];
+  var open=list.filter(function(s){return (m[s.no]||0)<100;}),done=list.filter(function(s){return (m[s.no]||0)>=100;});
   var parts=open.filter(function(s){return (m[s.no]||0)>0;}).length;
   document.getElementById('stageHint').textContent='已請滿 '+done.length+' 期已隱藏，部分請款 '+parts+' 期';
   if(!open.length){document.getElementById('stageArea').innerHTML='<div class="empty">此承包商所有期別皆已請款完成。</div>';return;}
-  var head='<thead><tr><th class="c" style="width:44px">選取</th><th style="width:56px">期別</th><th>完成之工程項目</th><th class="num">比例</th><th class="num">期別金額</th><th class="c">已請成數</th><th class="c">本次成數</th><th class="num">本次金額</th></tr></thead>';
+  var head='<thead><tr><th class="c" style="width:44px">選取</th><th style="width:64px">期別</th><th>完成之工程項目</th><th class="num">比例</th><th class="num">期別金額</th><th class="c">已請成數</th><th class="c">本次成數</th><th class="num">本次金額</th></tr></thead>';
   var body=open.map(function(s){
-    var c=m[s.no]||0, rem=100-c, picked=Object.prototype.hasOwnProperty.call(sel.picks,s.no), v=picked?sel.picks[s.no]:rem;
-    var invalid=picked&&(!(v>0)||v>rem+1e-9);
-    var status=c>0?'<span class="pill p-part">已請 '+pctTxt(c)+'</span><div class="remain">剩 '+pctTxt(rem)+'</div>':'<span class="pill p-none">未請款</span>';
+    var c=m[s.no]||0,rem=100-c,picked=Object.prototype.hasOwnProperty.call(sel.picks,s.no),v=picked?sel.picks[s.no]:rem,invalid=picked&&(!(v>0)||v>rem+1e-9);
+    var late=s.plan<baseMonth();
+    var status=(c>0?'<span class="pill p-part">已請 '+pctTxt(c)+'</span><div class="remain">剩 '+pctTxt(rem)+'</div>':'<span class="pill p-none">未請款</span>')+(late?'<div><span class="pill p-late" title="預計 '+roc(s.plan)+' 完成">逾期</span></div>':'');
     return '<tr class="'+(picked?'sel':(c>0?'partial':''))+'"><td class="c"><input type="checkbox" aria-label="選取第 '+s.no+' 期" data-no="'+s.no+'" '+(picked?'checked':'')+'></td>'+
-      '<td class="no">第 '+s.no+' 期</td><td>'+esc(s.item)+'</td><td class="num">'+s.pct+'%</td><td class="num">'+money(s.amount)+'</td><td class="c">'+status+'</td>'+
+      '<td class="no">第 '+s.no+' 期</td><td>'+esc(s.item)+'<div class="hint">預計 '+roc(s.plan)+'</div></td><td class="num">'+s.pct+'%</td><td class="num">'+money(s.amount)+'</td><td class="c">'+status+'</td>'+
       '<td class="c"><input class="pct" type="number" inputmode="decimal" min="0.01" max="'+rem+'" step="0.01" id="pct-'+s.no+'" aria-label="第 '+s.no+' 期本次成數" data-no="'+s.no+'" value="'+v+'" '+(picked?'':'disabled')+(invalid?' aria-invalid="true"':'')+'>'+
       (invalid?'<span class="err">'+(v>rem?'超過剩餘 '+pctTxt(rem):'請輸入大於 0')+'</span>':'')+'</td>'+
       '<td class="num">'+(picked&&!invalid?money(Math.round(s.amount*v/100)):'—')+'</td></tr>';
   }).join('');
   var doneRows='';
-  if(done.length){
-    doneRows='<button type="button" class="toggle-done" id="toggleDone">'+(sel.showDone?'收合':'顯示')+'已請滿的 '+done.length+' 期</button>';
-    if(sel.showDone){
-      doneRows+='<div class="scroll"><table>'+done.map(function(s){return '<tr class="donerow"><td class="c" style="width:44px">—</td><td class="no" style="width:56px">第 '+s.no+' 期</td><td>'+esc(s.item)+'</td><td class="num">'+money(s.amount)+'</td><td class="c"><span class="pill p-done">已請滿</span></td></tr>';}).join('')+'</table></div>';
-    }
-  }
+  if(done.length){doneRows='<button type="button" class="toggle-done" id="toggleDone">'+(sel.showDone?'收合':'顯示')+'已請滿的 '+done.length+' 期</button>';
+    if(sel.showDone)doneRows+='<div class="scroll"><table>'+done.map(function(s){return '<tr class="donerow"><td class="c" style="width:44px">—</td><td class="no" style="width:64px">第 '+s.no+' 期</td><td>'+esc(s.item)+'</td><td class="num">'+money(s.amount)+'</td><td class="c"><span class="pill p-done">已請滿</span></td></tr>';}).join('')+'</table></div>';}
   document.getElementById('stageArea').innerHTML='<div class="scroll"><table>'+head+'<tbody>'+body+'</tbody></table></div>'+doneRows;
 }
 document.getElementById('stageArea').addEventListener('change',function(e){
-  var t=e.target, no=Number(t.dataset.no); if(!no)return;
-  var rem=100-(claimedPctMap(sel.cid)[no]||0);
-  if(t.type==='checkbox'){ if(t.checked)sel.picks[no]=rem; else delete sel.picks[no]; }
-  else if(t.classList.contains('pct')){ sel.picks[no]=Number(t.value); }
-  hideConfirm(); renderStages(); renderSummary();
-  if(t.classList.contains('pct')){var el=document.getElementById('pct-'+no); if(el)el.focus();}
+  var t=e.target,no=Number(t.dataset.no);if(!no)return;var rem=100-(claimedPctMap(sel.cid)[no]||0);
+  if(t.type==='checkbox'){if(t.checked)sel.picks[no]=rem;else delete sel.picks[no];}else if(t.classList.contains('pct')){sel.picks[no]=Number(t.value);}
+  hideConfirm();renderStages();renderSummary();
+  if(t.classList.contains('pct')){var el=document.getElementById('pct-'+no);if(el)el.focus();}
 });
-document.getElementById('stageArea').addEventListener('click',function(e){
-  if(e.target.id==='toggleDone'){sel.showDone=!sel.showDone; renderStages();}
-});
-function pickedLines(){
-  var m=claimedPctMap(sel.cid);
-  return Object.keys(sel.picks).map(Number).sort(function(a,b){return a-b;}).map(function(no){
-    var rem=100-(m[no]||0), v=sel.picks[no];
-    return {stage:no,pct:v,rem:rem,ok:v>0&&v<=rem+1e-9};
-  });
-}
-function descOf(lines){
-  return lines.map(function(l){var s=stageOf(sel.cid,l.stage);return '第'+l.stage+'期 '+s.item+(l.pct<100?' '+pctTxt(l.pct):'');}).join('；');
-}
+document.getElementById('stageArea').addEventListener('click',function(e){if(e.target.id==='toggleDone'){sel.showDone=!sel.showDone;renderStages();}});
+document.getElementById('fDate').addEventListener('change',renderSummary);
+function pickedLines(){var m=claimedPctMap(sel.cid);return Object.keys(sel.picks).map(Number).sort(function(a,b){return a-b;}).map(function(no){var rem=100-(m[no]||0),v=sel.picks[no];return {stage:no,pct:v,rem:rem,ok:v>0&&v<=rem+1e-9};});}
+function descOf(lines){return lines.map(function(l){var s=stageOf(sel.cid,l.stage);return '第'+l.stage+'期 '+s.item+(l.pct<100?' '+pctTxt(l.pct):'');}).join('；');}
 function renderSummary(){
-  var lines=pickedLines(), ok=lines.length>0&&lines.every(function(l){return l.ok;});
-  var total=lines.filter(function(l){return l.ok;}).reduce(function(a,l){return a+lineAmt(sel.cid,l.stage,l.pct);},0);
-  var loan=Math.round(total*LOAN);
+  var lines=pickedLines(),ok=lines.length>0&&lines.every(function(l){return l.ok;});
+  var total=lines.filter(function(l){return l.ok;}).reduce(function(a,l){return a+lineAmt(sel.cid,l.stage,l.pct);},0),loan=Math.round(total*LOAN);
+  var date=document.getElementById('fDate').value||todayISO();
   document.getElementById('sNo').textContent=nextNo(sel.cid);
   document.getElementById('sCount').textContent=lines.length+' 期';
   document.getElementById('sTotal').textContent=money(total);
   document.getElementById('sLoan').textContent=money(loan);
   document.getElementById('sOwn').textContent=money(total-loan);
+  document.getElementById('sPay').textContent=roc(payMonthOf(date))+'/20';
   document.getElementById('sCum').textContent=money(claimedTotal(sel.cid)+total)+' / '+money(cMap[sel.cid].amt);
   document.getElementById('sDesc').textContent=lines.length?descOf(lines):'尚未勾選期別';
   document.getElementById('submitBtn').disabled=!ok;
@@ -388,53 +566,49 @@ function renderSummary(){
 document.getElementById('clearBtn').addEventListener('click',function(){sel.picks={};hideConfirm();renderStages();renderSummary();});
 function hideConfirm(){var b=document.getElementById('confirmBox');b.hidden=true;b.innerHTML='';}
 document.getElementById('submitBtn').addEventListener('click',function(){
-  var lines=pickedLines(); if(!lines.length||!lines.every(function(l){return l.ok;}))return;
+  var lines=pickedLines();if(!lines.length||!lines.every(function(l){return l.ok;}))return;
   var date=document.getElementById('fDate').value||todayISO();
   var c=buildClaim(nextNo(sel.cid),date,sel.cid,lines.map(function(l){return [l.stage,l.pct];}),document.getElementById('fInv').value.trim());
   var box=document.getElementById('confirmBox');
-  box.innerHTML='<div><b>確認送出 '+c.no+'？</b><br>'+esc(cMap[sel.cid].short)+'，'+lines.length+' 期，合計 NT$ '+money(c.total)+'（融資 '+money(c.loan)+'／自籌 '+money(c.own)+'）</div><div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="okBtn">確認送出</button><button type="button" class="btn" id="cancelBtn">取消</button></div>';
+  box.innerHTML='<div><b>確認送出 '+c.no+'？</b><br>'+esc(cMap[sel.cid].short)+'，'+lines.length+' 期，合計 NT$ '+money(c.total)+'（建融 '+money(c.loan)+'／自籌 '+money(c.own)+'），預計 '+roc(c.pay)+'/20 撥款</div><div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="okBtn">確認送出</button><button type="button" class="btn" id="cancelBtn">取消</button></div>';
   box.hidden=false;
   document.getElementById('okBtn').onclick=function(){
-    // 送出前再次檢查，避免同期別超額請款
-    var m=claimedPctMap(sel.cid), bad=c.details.filter(function(d){return d.pct>100-(m[d.stage]||0)+1e-9;});
+    var m=claimedPctMap(sel.cid),bad=c.details.filter(function(d){return d.pct>100-(m[d.stage]||0)+1e-9;});
     if(bad.length){toast('第 '+bad[0].stage+' 期超過剩餘成數，已取消送出');hideConfirm();renderStages();renderSummary();return;}
-    claims.push(c); save(); sel.picks={}; document.getElementById('fInv').value=''; hideConfirm();
-    renderEntry(); toast('已送出 '+c.no+'，金額 NT$ '+money(c.total));
+    claims.push(c);save();sel.picks={};document.getElementById('fInv').value='';hideConfirm();renderEntry();
+    toast('已送出 '+c.no+'，金額 NT$ '+money(c.total)+'，戰情看板已更新');
   };
   document.getElementById('cancelBtn').onclick=hideConfirm;
   document.getElementById('okBtn').focus();
 });
 
-// ---------- 請款紀錄 ----------
+// ================= 請款紀錄 =================
 var recFilter=document.getElementById('recFilter');
 recFilter.innerHTML+=CONTRACTORS.map(function(c){return '<option value="'+c.id+'">'+esc(c.short)+'</option>';}).join('');
 recFilter.addEventListener('change',renderRecords);
 function renderRecords(){
-  var f=recFilter.value;
-  var list=claims.filter(function(c){return !f||c.cid===f;}).slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.no<b.no?1:-1);});
+  var f=recFilter.value,list=claims.filter(function(c){return !f||c.cid===f;}).slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.no<b.no?1:-1);});
   if(!list.length){document.getElementById('recTable').innerHTML='<tbody><tr><td class="empty">沒有請款紀錄</td></tr></tbody>';return;}
   var sum=list.reduce(function(a,c){return a+c.total;},0);
-  document.getElementById('recTable').innerHTML='<thead><tr><th>請款單號</th><th>請款日期</th><th>承包商</th><th>請款期別（本次成數）</th><th class="num">請款金額</th><th class="num">融資 70%</th><th class="num">自籌 30%</th><th>發票號碼</th></tr></thead><tbody>'+
-    list.map(function(c){
-      return '<tr><td style="font-family:var(--mono)">'+esc(c.no)+'</td><td style="font-family:var(--mono);white-space:nowrap">'+roc(c.date)+'</td><td style="white-space:nowrap">'+esc(cMap[c.cid].short)+'</td><td>'+
-        c.details.map(function(d){return '第'+d.stage+'期'+(d.pct<100?'（'+pctTxt(d.pct)+'）':'');}).join('、')+'</td><td class="num">'+money(c.total)+'</td><td class="num">'+money(c.loan)+'</td><td class="num">'+money(c.own)+'</td><td style="font-family:var(--mono)">'+esc(c.invoice||'—')+'</td></tr>';
-    }).join('')+'</tbody><tfoot><tr><td colspan="4">合計 '+list.length+' 張</td><td class="num">'+money(sum)+'</td><td colspan="3"></td></tr></tfoot>';
+  document.getElementById('recTable').innerHTML='<thead><tr><th>請款單號</th><th>申請日期</th><th>撥款月</th><th>承包商</th><th>請款期別（本次成數）</th><th class="num">請款金額</th><th class="num">建融 70%</th><th class="num">自籌 30%</th><th>發票號碼</th></tr></thead><tbody>'+
+    list.map(function(c){return '<tr><td style="font-family:var(--mono)">'+esc(c.no)+'</td><td style="font-family:var(--mono);white-space:nowrap">'+roc(c.date)+'</td><td style="font-family:var(--mono);white-space:nowrap">'+roc(c.pay)+'</td><td style="white-space:nowrap">'+esc(cMap[c.cid].short)+'</td><td>'+
+      c.details.map(function(d){return '第'+d.stage+'期'+(d.pct<100?'（'+pctTxt(d.pct)+'）':'');}).join('、')+'</td><td class="num">'+money(c.total)+'</td><td class="num">'+money(c.loan)+'</td><td class="num">'+money(c.own)+'</td><td style="font-family:var(--mono)">'+esc(c.invoice||'—')+'</td></tr>';}).join('')+
+    '</tbody><tfoot><tr><td colspan="5">合計 '+list.length+' 張</td><td class="num">'+money(sum)+'</td><td colspan="3"></td></tr></tfoot>';
 }
 
-// ---------- 重置 ----------
-var resetArmed=false, resetTimer;
+// ================= 重置 =================
+var resetArmed=false,resetTimer;
 document.getElementById('resetBtn').addEventListener('click',function(){
   var b=this;
   if(!resetArmed){resetArmed=true;b.textContent='再按一次確認重置';resetTimer=setTimeout(function(){resetArmed=false;b.textContent='重置示範資料';},3000);return;}
-  clearTimeout(resetTimer); resetArmed=false; b.textContent='重置示範資料';
-  claims=seedClaims(); save(); sel.picks={}; hideConfirm();
-  var cur=tabs.filter(function(t){return document.getElementById('t-'+t).getAttribute('aria-selected')==='true';})[0];
-  showTab(cur); toast('已恢復為示範資料');
+  clearTimeout(resetTimer);resetArmed=false;b.textContent='重置示範資料';
+  claims=seedClaims();save();sel.picks={};hideConfirm();showTab(currentTab());toast('已恢復為示範資料');
 });
+var rT;window.addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(function(){if(currentTab()==='dash')drawCharts();},200);});
 
 document.getElementById('projName').textContent=PROJECT;
 var h=(location.hash||'').replace('#','');
-showTab(tabs.indexOf(h)>=0?h:'overview');
+showTab(tabs.indexOf(h)>=0?h:'dash');
 })();
 </script>
 </body>
