@@ -8,10 +8,11 @@
  *   3. 首頁 Hero
  *   4. 01 關鍵數據
  *   5. 02 專案經歷
- *   6. 03 證照學歷
- *   7. 04 學術與實作專案
- *   8. 頁尾聯絡
- *   9. 文件／影片彈窗
+ *   6. 03 都更觀點
+ *   7. 04 證照學歷
+ *   8. 05 學術與實作專案
+ *   9. 頁尾聯絡
+ *  10. 文件／影片彈窗
  *
  * 斷點：≤1200px 平板寬　≤1024px 小平板　≤768px 手機
  */
@@ -1531,7 +1532,162 @@ a.metric-card:hover .metric-jump {
   font-size: 1.08rem;
 }
 
-/* ==================== 03 證照學歷 ==================== */
+/* ==================== 03 都更觀點 ==================== */
+.perspective-section {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.ur-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.ur-intro p {
+  max-width: 46rem;
+  font-size: 1.05rem;
+}
+
+.ur-legend {
+  list-style: none;
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.ur-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.ur-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.ur-swatch--do {
+  background: var(--accent);
+}
+
+.ur-swatch--join {
+  background: #d5ddd6;
+}
+
+.ur-swatch--know {
+  border: 1px solid #8f978f;
+}
+
+.ur-flow {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.ur-step {
+  min-height: 7.5rem;
+  padding: 1.1rem 1.2rem;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ur-meta {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.ur-name {
+  font-family: "Noto Serif TC", serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.ur-note {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.ur-step--do {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.ur-step--do .ur-meta {
+  color: #d5ddd6;
+}
+
+.ur-step--join {
+  background: #d5ddd6;
+  color: var(--text-dark);
+}
+
+.ur-step--join .ur-meta {
+  color: var(--accent);
+}
+
+.ur-step--know {
+  border: 1px solid #8f978f;
+  color: #3a3f3b;
+}
+
+.ur-step--know .ur-meta {
+  color: #555b56;
+}
+
+.ur-view {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.ur-view p {
+  font-family: "Noto Serif TC", serif;
+  font-size: 1.5rem;
+  line-height: 1.7;
+  font-weight: 600;
+  color: var(--forest-dark);
+  max-width: 52rem;
+}
+
+@media (max-width: 1024px) {
+  .ur-flow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .perspective-section {
+    padding: 4rem 1.25rem;
+  }
+  .ur-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .ur-step {
+    min-height: 6rem;
+    padding: 0.85rem 0.9rem;
+  }
+  .ur-name {
+    font-size: 1rem;
+  }
+  .ur-view p {
+    font-size: 1.15rem;
+  }
+}
+
+/* ==================== 04 證照學歷 ==================== */
 .education-list .license-names li::after {
   display: none;
 }
@@ -1813,7 +1969,7 @@ a.metric-card:hover .metric-jump {
   }
 }
 
-/* ==================== 04 學術與實作專案 ==================== */
+/* ==================== 05 學術與實作專案 ==================== */
 .portfolio-section {
   max-width: var(--container);
   margin: 0 auto;
