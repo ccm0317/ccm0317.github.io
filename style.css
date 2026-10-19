@@ -1541,12 +1541,16 @@ a.metric-card:hover .metric-jump {
 }
 
 .ur-intro {
+  margin-bottom: 2.75rem;
+}
+
+.ur-toolbar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  gap: 1rem 2rem;
+  align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 2.25rem;
+  gap: 0.75rem 2rem;
+  margin-bottom: 1rem;
 }
 
 .ur-intro p {
@@ -1558,8 +1562,11 @@ a.metric-card:hover .metric-jump {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem 1.4rem;
+  align-items: center;
+  gap: 0.5rem 1.4rem;
   font-size: 0.85rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
   color: var(--text-light);
 }
 
@@ -1595,10 +1602,11 @@ a.metric-card:hover .metric-jump {
 }
 
 .ur-hint {
-  width: 100%;
-  font-size: 0.82rem;
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
   color: var(--text-light);
-  letter-spacing: 0.04em;
 }
 
 .ur-map {
