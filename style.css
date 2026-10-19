@@ -1755,6 +1755,10 @@ a.metric-card:hover .metric-jump {
   margin-top: 3rem;
 }
 
+.urban-card-action {
+  margin-top: 1rem;
+}
+
 .ur-manual-title {
   display: flex;
   flex-wrap: wrap;
