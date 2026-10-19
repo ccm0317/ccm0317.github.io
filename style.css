@@ -1586,104 +1586,170 @@ a.metric-card:hover .metric-jump {
   border: 1px solid #8f978f;
 }
 
-.ur-flow {
+.ur-map {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
-.ur-step {
-  min-height: 7.5rem;
-  padding: 1.1rem 1.2rem;
-  border-radius: 4px;
+.ur-stage {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
-.ur-meta {
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+.ur-stage-head {
+  border-top: 2px solid var(--text-dark);
+  padding-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
-.ur-name {
-  font-family: "Noto Serif TC", serif;
-  font-size: 1.15rem;
+.ur-stage-num {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  color: var(--accent);
   font-weight: 600;
 }
 
-.ur-note {
-  font-size: 0.85rem;
-  line-height: 1.5;
+.ur-stage-name {
+  font-family: "Noto Serif TC", serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
 }
 
-.ur-step--do {
+.ur-stage-lvl {
+  font-size: 0.8rem;
+  color: #555b56;
+}
+
+.ur-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ur-s {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  padding: 0.55rem 0.7rem;
+  border-radius: 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.ur-s--do {
   background: var(--accent);
   color: #ffffff;
 }
 
-.ur-step--do .ur-meta {
-  color: #d5ddd6;
-}
-
-.ur-step--join {
+.ur-s--join {
   background: #d5ddd6;
   color: var(--text-dark);
 }
 
-.ur-step--join .ur-meta {
-  color: var(--accent);
+.ur-s--know {
+  border: 1px dashed #8f978f;
+  color: #3a3f3b;
 }
 
-.ur-step--know {
+.ur-work-tag {
+  flex: none;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  border-radius: 2px;
+  background: #e8c872;
+  color: #1b2820;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.ur-legend .ur-work-tag {
+  margin-right: 0.1rem;
+}
+
+.ur-data {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.ur-data-card {
+  padding: 1.4rem 1.6rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.ur-data-card--concept {
+  background: transparent;
+  border-style: dashed;
+  border-color: #8f978f;
+}
+
+.ur-data-title {
+  font-family: "Noto Serif TC", serif;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ur-data-badge {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  background: #e8c872;
+  color: #1b2820;
+  letter-spacing: 0.05em;
+}
+
+.ur-data-badge--concept {
+  background: transparent;
   border: 1px solid #8f978f;
   color: #3a3f3b;
 }
 
-.ur-step--know .ur-meta {
-  color: #555b56;
-}
-
-.ur-view {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
-}
-
-.ur-view p {
-  font-family: "Noto Serif TC", serif;
-  font-size: 1.5rem;
+.ur-chain {
+  margin-top: 0.7rem;
+  font-weight: 500;
+  color: var(--accent);
   line-height: 1.7;
-  font-weight: 600;
-  color: var(--forest-dark);
-  max-width: 52rem;
 }
 
-@media (max-width: 1024px) {
-  .ur-flow {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.ur-data-desc {
+  margin-top: 0.4rem;
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+
+@media (max-width: 1200px) {
+  .ur-map {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    row-gap: 2rem;
   }
 }
+
 
 @media (max-width: 768px) {
   .perspective-section {
     padding: 4rem 1.25rem;
   }
-  .ur-flow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
+  .ur-map {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1.75rem;
   }
-  .ur-step {
-    min-height: 6rem;
-    padding: 0.85rem 0.9rem;
-  }
-  .ur-name {
-    font-size: 1rem;
-  }
-  .ur-view p {
-    font-size: 1.15rem;
+  .ur-data {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
