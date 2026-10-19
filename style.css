@@ -1602,10 +1602,78 @@ a.metric-card:hover .metric-jump {
 
 .ur-stage-head {
   border-top: 2px solid var(--text-dark);
-  padding-top: 0.6rem;
+  padding: 0.6rem 0 0.2rem;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.ur-stage-head::-webkit-details-marker {
+  display: none;
+}
+
+.ur-stage-head:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.ur-stage-head:hover .ur-stage-name {
+  color: var(--accent);
+}
+
+.ur-bar {
+  display: flex;
+  gap: 2px;
+  margin-top: 0.55rem;
+  height: 6px;
+}
+
+.ur-bar-seg {
+  flex: 1;
+  border-radius: 1px;
+}
+
+.ur-bar-seg--do {
+  background: var(--accent);
+}
+
+.ur-bar-seg--join {
+  background: #b9c6bb;
+}
+
+.ur-bar-seg--know {
+  border: 1px dashed #8f978f;
+}
+
+.ur-toggle {
+  margin-top: 0.45rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #555b56;
+  min-height: 24px;
+}
+
+.ur-chev {
+  transition: transform 0.2s ease;
+}
+
+.ur-details[open] .ur-chev {
+  transform: rotate(180deg);
+}
+
+.ur-details[open] .ur-steps {
+  margin-top: 0.6rem;
+}
+
+.ur-hint {
+  width: 100%;
+  font-size: 0.85rem;
+  color: #555b56;
+  margin-top: -0.5rem;
 }
 
 .ur-stage-num {
@@ -1746,7 +1814,25 @@ a.metric-card:hover .metric-jump {
   }
   .ur-map {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 1.75rem;
+    row-gap: 0.6rem;
+  }
+  .ur-stage-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    column-gap: 0.6rem;
+    row-gap: 0.2rem;
+  }
+  .ur-stage-name {
+    font-size: 1.02rem;
+  }
+  .ur-bar {
+    grid-column: 1 / -1;
+    margin-top: 0.3rem;
+  }
+  .ur-toggle {
+    grid-column: 1 / -1;
+    margin-top: 0.1rem;
   }
   .ur-data {
     grid-template-columns: minmax(0, 1fr);
