@@ -71,6 +71,10 @@
   .page.en .skill-en .meta { display:block; }
   .page.en aside .side-list .yr { display: inline; margin-right: 2mm; }
   .page.en section + section { margin-top: 6mm; }
+  .page.en .photo-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5mm; margin-top: 3.5mm; }
+  .page.en .photo-row figure { margin: 0; }
+  .page.en .photo-row img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 1mm; }
+  .page.en .photo-row figcaption { font-size: 7pt; color: var(--muted); margin-top: 1mm; line-height: 1.3; }
   .page.en aside .side-list li { padding-top: 1.2mm; padding-bottom: 1.2mm; }
 </style>
 </head>
@@ -128,6 +132,11 @@
         <h2>PROJECTS</h2>
         <div class="work"><b>Invisible Waterscape</b> | NTUST thesis: water infrastructure as landscape</div>
         <div class="work"><b>Tavorong Bamboo House</b> | Best Capstone Award: 1:1 bamboo build</div>
+        <div class="photo-row">
+          <figure><img src="img/r_3d.jpg" alt=""><figcaption>Clash review in ArchiCAD 3D</figcaption></figure>
+          <figure><img src="img/r_thesis.jpg" alt=""><figcaption>Thesis: Invisible Waterscape</figcaption></figure>
+          <figure><img src="img/r_bamboo.jpg" alt=""><figcaption>1:1 bamboo house build</figcaption></figure>
+        </div>
       </section>
 
     </main>
