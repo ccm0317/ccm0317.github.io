@@ -73,9 +73,43 @@
   .page.en section + section { margin-top: 6mm; }
   .page.en .photo-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5mm; margin-top: 3.5mm; }
   .page.en .photo-row figure { margin: 0; }
-  .page.en .photo-row img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 1mm; }
+  .page.en .photo-row img { display: block; width: 100%; aspect-ratio: var(--photo-ratio, 1.45); object-fit: cover; border-radius: 1mm; }
   .page.en .photo-row figcaption { font-size: 7pt; color: var(--muted); margin-top: 1mm; line-height: 1.3; }
   .page.en aside .side-list li { padding-top: 1.2mm; padding-bottom: 1.2mm; }
+  .jt-group { display: grid; grid-template-columns: 13mm 1fr; gap: 2mm; padding: 1.4mm 0; border-bottom: .5pt dashed var(--line); }
+  .jt-group:first-child { padding-top: .6mm; }
+  .jt-tag { font-size: 7.4pt; font-weight: 700; color: var(--accent); letter-spacing: .06em; padding-top: .55mm; line-height: 1.35; }
+  .jt-group ul.points { margin-top: 0; }
+  .jt-group ul.points li { margin-top: 0; }
+  .jt-group ul.points li + li { margin-top: .8mm; }
+  .jt-results { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin-top: 2.6mm; }
+  .jt-res { background: var(--tint); padding: 2.4mm 3mm 2.2mm; }
+  .jt-res-k { display: block; font-size: 7.4pt; color: var(--muted); margin-bottom: 1.2mm; }
+  .jt-bar { display: grid; grid-template-columns: 12.5mm 1fr auto; align-items: center; gap: 1.6mm; font-size: 7.4pt; margin-top: .9mm; }
+  .jt-bar .lbl { color: var(--muted); white-space: nowrap; }
+  .jt-bar i { display: block; height: 2.2mm; background: var(--accent); border-radius: .4mm; justify-self: start; }
+  .jt-bar i.old { background: #b9c4bc; }
+  .jt-bar b { font-family: var(--serif); font-size: 8.6pt; color: var(--accent); white-space: nowrap; min-width: 13mm; text-align: right; }
+  aside .side-list .aw { display: block; }
+  .job--sep { border-top: .6pt solid var(--line); padding-top: 2.8mm; margin-top: 3.2mm; }
+  aside .side-list li.sk { display: grid; grid-template-columns: 15mm 1fr; align-items: baseline; font-size: 8.6pt; }
+  aside .side-list li.sk .k { font-family: var(--serif); font-size: 7.4pt; color: var(--accent); }
+  .nw { white-space: nowrap; }
+  .jt-life { background: var(--tint); padding: 2.4mm 3mm 1.6mm; margin-top: 2.6mm; }
+  .jt-life-head { display: flex; align-items: baseline; gap: 2mm; }
+  .jt-life-head .jt-tag { width: 13mm; flex: none; padding-top: 0; }
+  .jt-life-head b { font-size: 8.8pt; color: var(--ink); }
+  .jt-life-head .chain { font-size: 7.4pt; color: var(--accent); margin-left: auto; }
+  .jt-life-note { font-size: 7.4pt; color: var(--muted); margin-top: .6mm; }
+  .jt-life-svg { display: block; width: 100%; height: auto; margin-top: 1.6mm; font-family: var(--sans); }
+  aside .side-list li.awd { display: grid; grid-template-columns: 8.5mm 1fr; align-items: baseline; }
+  aside .side-list li.awd .yr { margin-right: 0; }
+  .page.en .jt-tag { font-size: 7pt; letter-spacing: .02em; }
+  .page.en .jt-group { grid-template-columns: 18mm 1fr; }
+  .page.en .jt-life-head .jt-tag { width: 18mm; }
+  .page.en .jt-life-head b { white-space: nowrap; }
+  .page.en ul.points li { margin-bottom: 0; }
+  .page.en aside section + section { margin-top: 8.2mm; }
 </style>
 </head>
 <body>
@@ -108,22 +142,31 @@
         <h2>EXPERIENCE</h2>
         <div class="job">
           <div class="job-head"><div><b>Jiateng Construction</b><span class="title">Project Specialist, Owner-side PM</span></div><time>2024 — 2026</time></div>
-          <ul class="points">
-            <li>22F/B6F SRC tower: managed <em>NT$570M</em> of procurement, from scope breakdown to contract award</li>
-            <li>Chaired weekly <em>shop-drawing reviews</em> with contractor, architect, structural and MEP</li>
-            <li><em>Elevator traffic analysis</em> of 5 schemes; added 2 cars, peak capacity now 2× demand</li>
-            <li>Solved an <em>elevator pit vs. generator air duct clash</em> in ArchiCAD 3D; no schedule delay</li>
-            <li>Advanced <em>3 urban renewal projects</em> (50/150/75 households); planned 4 unit types for one</li>
-            <li>Built a <em>payment system</em> and project workbook; each claim cut from 2–3 hours to 10 min</li>
-            <li>Wrote a Lessons Learned Handbook on drawing control, issues and renewal SOPs</li>
-          </ul>
+          <div class="jt">
+            <div class="jt-group"><span class="jt-tag">Procurement</span><ul class="points">
+              <li>22F/B6F SRC tower: managed <em>NT$570M</em> in procurement</li>
+              <li>Chaired weekly <em>site and drawing meetings</em> and shop-drawing reviews; managed trade interfaces and schedule</li>
+            </ul></div>
+            <div class="jt-group"><span class="jt-tag">Design review</span><ul class="points">
+              <li>Built an <em>elevator traffic analysis</em> on a published journal method; it led the owner to add 2 elevators for future users</li>
+              <li>Resolved an <em>elevator pit vs. generator air duct clash</em> with an ArchiCAD 3D model, coordinating three parties to avoid delay</li>
+            </ul></div>
+            <div class="jt-group"><span class="jt-tag">Renewal</span><ul class="points">
+              <li>Advanced <em>3 urban renewal projects</em> (50/150/75 units) through review and consolidation</li>
+            </ul></div>
+            <div class="jt-life">
+              <div class="jt-life-head"><span class="jt-tag">Concept</span><b>Urban Renewal Lifecycle System</b></div>
+              <svg class="jt-life-svg" viewBox="0 0 440 30" role="img" aria-label="Urban renewal lifecycle system"><line x1="30" y1="22" x2="410" y2="22" stroke="#2e4a3d" stroke-opacity=".35" stroke-width="1.2"/><circle cx="30" cy="22" r="3.4" fill="#fff" stroke="#2e4a3d" stroke-width="1.4"/><text x="30" y="11" text-anchor="middle" font-size="9" fill="#444">Kickoff</text><circle cx="106" cy="22" r="3.4" fill="#fff" stroke="#2e4a3d" stroke-width="1.4"/><text x="106" y="11" text-anchor="middle" font-size="9" fill="#444">Plan approved</text><circle cx="182" cy="22" r="3.4" fill="#fff" stroke="#2e4a3d" stroke-width="1.4"/><text x="182" y="11" text-anchor="middle" font-size="9" fill="#444">Rights approved</text><circle cx="258" cy="22" r="3.4" fill="#fff" stroke="#2e4a3d" stroke-width="1.4"/><text x="258" y="11" text-anchor="middle" font-size="9" fill="#444">Construction</text><circle cx="334" cy="22" r="3.4" fill="#fff" stroke="#2e4a3d" stroke-width="1.4"/><text x="334" y="11" text-anchor="middle" font-size="9" fill="#444">Completion</text><circle cx="410" cy="22" r="3.4" fill="#fff" stroke="#2e4a3d" stroke-width="1.4"/><text x="410" y="11" text-anchor="middle" font-size="9" fill="#444">Closeout</text></svg>
+              <p class="jt-life-note">Drawn from practice at Jiateng: set a kickoff baseline and log planned vs. actual at each stage, keeping the process traceable and cost and schedule aligned.</p>
+            </div>
+          </div>
         </div>
-        <div class="job">
-          <div class="job-head"><div><b>Community &amp; Environmental Education</b></div></div>
+        <div class="job job--sep">
+          <div class="job-head"><div><b>Cross-disciplinary Advocacy &amp; Social Impact</b></div></div>
           <ul class="points">
             <li><b>GRAT</b> architecture review collective · Operations Advisor · 2021–</li>
             <li><b>Taiwan Treehouse Association</b> · Board Member · 2020–</li>
-            <li><b>Lujiao Creek Wetland</b> · Environmental Educator · 2012– (14 yrs)</li>
+            <li><b>Lujiao Creek Wetland</b> · Environmental Educator · 2012–</li>
           </ul>
         </div>
       </section>
@@ -131,7 +174,7 @@
       <section>
         <h2>PROJECTS</h2>
         <div class="work"><b>Invisible Waterscape</b> | NTUST thesis: water infrastructure as landscape</div>
-        <div class="work"><b>Tavorong Bamboo House</b> | Best Capstone Award: 1:1 bamboo build</div>
+        <div class="work"><b>Tavorong Bamboo House: Revival &amp; Heritage</b> | Best Capstone Award: 1:1 build</div>
         <div class="photo-row">
           <figure><img src="img/r_3d.jpg" alt=""><figcaption>Clash review in ArchiCAD 3D</figcaption></figure>
           <figure><img src="img/r_thesis.jpg" alt=""><figcaption>Thesis: Invisible Waterscape</figcaption></figure>
@@ -146,7 +189,7 @@
         <h2>LICENSES</h2>
         <ul class="side-list">
           <li>PMP®<span class="meta">PMI</span></li>
-          <li>Technician Certificates (Level C)<span class="sub">Architectural Drafting (manual &amp; CAD)<br>Concrete, Surveying</span></li>
+          <li>National Technician Cert. (Level C)<span class="sub">Concrete, Surveying<br>Architectural Drafting (manual &amp; CAD)</span></li>
         </ul>
       </section>
       <section>
@@ -154,24 +197,26 @@
         <ul class="side-list">
           <li><span class="yr">2020 — 2023</span>NTUST (Taiwan Tech)<span class="meta">B.S., Architecture</span></li>
           <li><span class="yr">2018 — 2020</span>Taipei Tech<span class="meta">Architecture (transferred)</span></li>
-          <li><span class="yr">2015 — 2018</span>Da-An Vocational High School<span class="meta">Architecture</span></li>
+          <li><span class="yr">2015 — 2018</span>Da-An Vocational H.S.<span class="meta">Architecture</span></li>
         </ul>
       </section>
       <section>
         <h2>AWARDS</h2>
         <ul class="side-list">
-          <li><span class="yr">2022</span>NTUST Best Capstone Award</li>
-          <li><span class="yr">2021</span>New Taipei EPA Environmental Award</li>
-          <li><span class="yr">2020</span>Taipei Tech Campus Design, 1st Place</li>
-          <li><span class="yr">2018</span>National Drafting Competition, 3rd</li>
+          <li class="awd"><span class="yr">2022</span><span>NTUST Best Capstone Award</span></li>
+          <li class="awd"><span class="yr">2021</span><span>New Taipei EPA Award</span></li>
+          <li class="awd"><span class="yr">2020</span><span>Taipei Tech Campus Design, 1st</span></li>
+          <li class="awd"><span class="yr">2018</span><span>National Drafting Contest, 3rd</span></li>
         </ul>
       </section>
       <section>
         <h2>SKILLS</h2>
         <ul class="side-list">
-          <li>AI collaboration<span class="meta">Data modeling, system building, documentation</span></li>
-          <li>ArchiCAD · AutoCAD · SketchUp · Lumion</li>
-          <li>InDesign · Premiere · Microsoft Office</li>
+          <li class="sk"><span class="k">AI</span><span>AI-assisted modeling, systems and documentation</span></li>
+          <li class="sk"><span class="k">BIM / CAD</span><span>ArchiCAD, AutoCAD</span></li>
+          <li class="sk"><span class="k">3D render</span><span>SketchUp, Lumion</span></li>
+          <li class="sk"><span class="k">Layout</span><span>InDesign, Premiere</span></li>
+          <li class="sk"><span class="k">Office</span><span>Microsoft Office</span></li>
         </ul>
       </section>
     </aside>

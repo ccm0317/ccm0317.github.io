@@ -3681,3 +3681,6 @@ a.metric-card:hover .metric-jump {
     align-self: flex-start;
   }
 }
+
+/* nowrap span inside skill text keeps parent styling */
+.edu-detail strong .nowrap { display: inline; font-size: inherit; color: inherit; margin: 0; font-weight: inherit; letter-spacing: inherit; }
