@@ -61,6 +61,15 @@
   footer { margin-top: 4mm; padding-top: 2.5mm; border-top: .5pt solid var(--line); display: flex; justify-content: space-between; font-size: 7.4pt; color: var(--muted); }
   footer a { color: var(--accent); text-decoration: none; }
 </style>
+<style>
+  .photo-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5mm; margin-top: 3.5mm; }
+  .photo-row figure { margin: 0; }
+  .photo-row img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 1mm; }
+  .photo-row figcaption { font-size: 7.2pt; color: var(--muted); margin-top: 1mm; line-height: 1.3; }
+  aside .side-list .yr { display: inline; margin-right: 2mm; }
+  aside .side-list li { padding-top: 1.2mm; padding-bottom: 1.2mm; }
+  section + section { margin-top: 6mm; }
+</style>
 </head>
 <body>
 <div class="page">
@@ -116,17 +125,13 @@
         <h2>PROJECTS<small>學術與實作專案</small></h2>
         <div class="work"><b>看不見的水景</b>｜台科大畢業設計：水淨化設施與地景共構</div>
         <div class="work"><b>大武壠竹屋</b>｜台科大 USR 最佳專題獎：1:1 竹構實作與工法教材</div>
+        <div class="photo-row">
+          <figure><img src="img/r_3d.jpg" alt=""><figcaption>ArchiCAD 3D 衝突檢討</figcaption></figure>
+          <figure><img src="img/r_thesis.jpg" alt=""><figcaption>畢業設計：看不見的水景</figcaption></figure>
+          <figure><img src="img/r_bamboo.jpg" alt=""><figcaption>大武壠竹屋 1:1 實作</figcaption></figure>
+        </div>
       </section>
-          <section>
-        <h2>SKILLS<small>技能</small></h2>
-        <ul class="side-list">
-          <li class="skill"><span class="meta">AI 協同工作</span>以 AI 協同完成資料建模、系統開發與文件整理</li>
-          <li class="skill"><span class="meta">BIM / CAD</span>ArchiCAD、AutoCAD</li>
-          <li class="skill"><span class="meta">3D 與算圖</span>SketchUp、Lumion</li>
-          <li class="skill"><span class="meta">排版與影音</span>InDesign、Premiere</li>
-          <li class="skill"><span class="meta">文書</span>Microsoft Office</li>
-        </ul>
-      </section>
+
     </main>
 
     <aside>
@@ -155,6 +160,14 @@
         </ul>
       </section>
       
+      <section>
+        <h2>SKILLS<small>技能</small></h2>
+        <ul class="side-list">
+          <li>AI 協同工作<span class="meta">以 AI 協同完成資料建模、系統開發與文件整理</span></li>
+          <li>ArchiCAD・AutoCAD・SketchUp・Lumion</li>
+          <li>InDesign・Premiere・Microsoft Office</li>
+        </ul>
+      </section>
     </aside>
   </div>
 
