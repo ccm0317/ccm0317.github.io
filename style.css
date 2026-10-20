@@ -2994,13 +2994,7 @@ a.metric-card:hover .metric-jump {
   margin-bottom: 1.25rem;
   border: 1px solid rgba(46, 74, 61, 0.18);
   background: #fff;
-  cursor: zoom-in;
   box-shadow: 0 10px 24px rgba(27, 40, 32, 0.1);
-  transition: transform 0.25s ease;
-}
-
-.ur-ledger-shot:hover {
-  transform: translateY(-3px);
 }
 
 .ur-ledger-shot img {
