@@ -3028,3 +3028,20 @@ a.metric-card:hover .metric-jump {
   font-size: 0.85rem;
   color: #6b706c;
 }
+
+/* 全週期系統卡：概念示意圖 */
+.ur-concept-fig {
+  margin: 0 0 1.25rem;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.ur-concept-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ur-concept-svg text {
+  font-family: var(--font-sans);
+}
