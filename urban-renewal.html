@@ -34,8 +34,8 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/assets/main-BzkD1stP.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/main-DTiuo-XR.css">
+    <script type="module" crossorigin src="/assets/main-Bm1XKPxq.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/main-aFUCoztz.css">
   </head>
   <body class="subpage">
     <nav class="navbar">
@@ -199,7 +199,7 @@
             <li><span class="ur-swatch ur-swatch--do" aria-hidden="true"></span>實作</li>
             <li><span class="ur-swatch ur-swatch--join" aria-hidden="true"></span>參與</li>
             <li><span class="ur-swatch ur-swatch--know" aria-hidden="true"></span>理解</li>
-            <li><span class="ur-work-tag">原型</span>功能已完成，尚未實際導入</li>
+            <li><span class="ur-work-tag">實務建模</span>依實務流程建置，以虛構資料示範</li>
           </ul>
         </div>
 
@@ -265,9 +265,9 @@
               <ul class="ur-steps">
               <li class="ur-s ur-s--do">工務會議・進度追蹤</li>
               <li class="ur-s ur-s--do">估驗計價</li>
-              <li class="ur-s ur-s--do ur-s--work">工程款請款系統<span class="ur-work-tag">原型</span></li>
-              <li class="ur-s ur-s--do ur-s--work">撥款確認・對帳表<span class="ur-work-tag">原型</span></li>
-              <li class="ur-s ur-s--do ur-s--work">資金看板<span class="ur-work-tag">原型</span></li>
+              <li class="ur-s ur-s--do ur-s--work">工程款請款系統<span class="ur-work-tag">實務建模</span></li>
+              <li class="ur-s ur-s--do ur-s--work">撥款確認・對帳表<span class="ur-work-tag">實務建模</span></li>
+              <li class="ur-s ur-s--do ur-s--work">資金看板<span class="ur-work-tag">實務建模</span></li>
               <li class="ur-s ur-s--do">追加減帳・客變</li>
             </ul>
             </details>
@@ -354,12 +354,50 @@
           </div>
         </div>
         <div class="ur-data">
-          <div class="ur-data-card">
-            <h3 class="ur-data-title">單一帳本 <span class="ur-data-badge">原型</span></h3>
+          <div class="ur-data-card ur-data-card--ledger">
+            <button
+              class="ur-ledger-shot open-modal"
+              data-src="/payment_dashboard.jpg"
+              data-type="image"
+              aria-label="放大檢視業主戰情看板畫面"
+            >
+              <img src="/payment_dashboard.jpg" alt="業主戰情看板：合約總額、累計計價、建融與自籌付款、資金水位與待處理提醒（示範資料）" loading="lazy" />
+            </button>
+            <h3 class="ur-data-title">單一帳本 <span class="ur-data-badge">實務建模</span></h3>
             <p class="ur-chain">請款 → 撥款 → 對帳 → 資金預估</p>
-            <p class="ur-data-desc">工程款從廠商送件到資金預估，在同一份資料裡連動，不必在多個檔案之間重複輸入與對帳。</p>
+            <p class="ur-data-desc">以 Google Sheets 加 Apps Script 建置的工程款請款系統。建融 70/30 撥款連動、發票浮額預警、完成比監控，從廠商請款到資金預估都在同一份帳本裡連動。</p>
+            <div class="ur-ledger-actions">
+              <a href="/payment-demo/" class="manual-btn primary" target="_blank" rel="noopener"><span>操作示範版</span><span aria-hidden="true">↗</span></a>
+              <button class="manual-btn open-modal" data-pdf="/Payment_System_Agile_Deck.pdf" data-type="pdf"><span>檢視開發過程簡報</span><span aria-hidden="true">↗</span></button>
+            </div>
+            <p class="ur-ledger-note">示範版使用虛構資料，可直接操作。</p>
           </div>
           <div class="ur-data-card ur-data-card--concept">
+            <figure class="ur-concept-fig">
+              <svg class="ur-concept-svg" viewBox="0 0 800 330" role="img" aria-label="示意圖：開案基準與兩個案子在各階段的投報率變化，並對照投報底線">
+<rect width="800" height="330" fill="#fff"/>
+<line x1="70.0" y1="40" x2="70.0" y2="260" stroke="#000" stroke-opacity=".07"/><text x="70.0" y="288" text-anchor="middle" font-size="15" fill="#555">開案</text><line x1="208.0" y1="40" x2="208.0" y2="260" stroke="#000" stroke-opacity=".07"/><text x="208.0" y="288" text-anchor="middle" font-size="15" fill="#555">事計核定</text><line x1="346.0" y1="40" x2="346.0" y2="260" stroke="#000" stroke-opacity=".07"/><text x="346.0" y="288" text-anchor="middle" font-size="15" fill="#555">權變核定</text><line x1="484.0" y1="40" x2="484.0" y2="260" stroke="#000" stroke-opacity=".07"/><text x="484.0" y="288" text-anchor="middle" font-size="15" fill="#555">開工</text><line x1="622.0" y1="40" x2="622.0" y2="260" stroke="#000" stroke-opacity=".07"/><text x="622.0" y="288" text-anchor="middle" font-size="15" fill="#555">完工</text><line x1="760.0" y1="40" x2="760.0" y2="260" stroke="#000" stroke-opacity=".07"/><text x="760.0" y="288" text-anchor="middle" font-size="15" fill="#555">結案</text>
+<line x1="70" y1="260" x2="760" y2="260" stroke="#1a1a1a" stroke-opacity=".5"/>
+<text x="58" y="44" text-anchor="end" font-size="14" fill="#555">投報</text>
+<line x1="70" y1="101.6" x2="760" y2="101.6" stroke="#2e4a3d" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="760" y="91.6" text-anchor="end" font-size="14" fill="#2e4a3d" font-weight="600">開案基準</text>
+<line x1="70" y1="172.0" x2="760" y2="172.0" stroke="#b5452b" stroke-width="2" stroke-dasharray="3 5"/>
+<text x="760" y="194.0" text-anchor="end" font-size="14" fill="#b5452b" font-weight="600">投報底線</text>
+<path d="M70.0,101.6 L208.0,132.4 L346.0,123.6 L484.0,128.0 L622.0,134.6 L760.0,130.2" fill="none" stroke="#2e4a3d" stroke-width="3"/><circle cx="70.0" cy="101.6" r="5" fill="#2e4a3d"/><circle cx="208.0" cy="132.4" r="5" fill="#2e4a3d"/><circle cx="346.0" cy="123.6" r="5" fill="#2e4a3d"/><circle cx="484.0" cy="128.0" r="5" fill="#2e4a3d"/><circle cx="622.0" cy="134.6" r="5" fill="#2e4a3d"/><circle cx="760.0" cy="130.2" r="5" fill="#2e4a3d"/>
+<path d="M70.0,110.4 L208.0,114.8 L346.0,128.0 L484.0,156.6 L622.0,163.2 L760.0,161.0" fill="none" stroke="#c46a2b" stroke-width="3"/><circle cx="70.0" cy="110.4" r="5" fill="#c46a2b"/><circle cx="208.0" cy="114.8" r="5" fill="#c46a2b"/><circle cx="346.0" cy="128.0" r="5" fill="#c46a2b"/><circle cx="484.0" cy="156.6" r="5" fill="#c46a2b"/><circle cx="622.0" cy="163.2" r="5" fill="#c46a2b"/><circle cx="760.0" cy="161.0" r="5" fill="#c46a2b"/>
+<g font-size="13" fill="#1a1a1a">
+<rect x="146.0" y="146.4" width="124" height="24" rx="3" fill="#e9eee9"/>
+<text x="208.0" y="163.4" text-anchor="middle">審議修正：差異記錄</text>
+<rect x="426.0" y="170.6" width="116" height="24" rx="3" fill="#f6e6d8"/>
+<text x="484.0" y="187.6" text-anchor="middle">接近底線：預警</text>
+</g>
+<g font-size="14" fill="#333">
+<line x1="70" y1="316" x2="96" y2="316" stroke="#2e4a3d" stroke-width="3"/><text x="104" y="321">案 A 實際</text>
+<line x1="200" y1="316" x2="226" y2="316" stroke="#c46a2b" stroke-width="3"/><text x="234" y="321">案 B 實際</text>
+<text x="760" y="321" text-anchor="end" fill="#888">示意，非實際數據</text>
+</g>
+</svg>
+            </figure>
             <h3 class="ur-data-title">都更建案全週期系統 <span class="ur-data-badge ur-data-badge--concept">概念</span></h3>
             <p class="ur-chain">開案基準 → 階段校準 → 跨案對照 → 結案檢討</p>
             <p class="ur-data-desc">都更從開案到結案常超過十年。以開案時的投報與時程為基準，在每個階段記錄預計與實際的差異，並與同時進行的其他案子互相對照，及早發現偏差；結案時回頭檢討，驗證當初的開案判斷是否正確。</p>
