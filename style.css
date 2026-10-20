@@ -3492,3 +3492,62 @@ a.metric-card:hover .metric-jump {
     justify-self: end;
   }
 }
+
+/* 連結條：拿掉小標後的欄位 */
+.strip-link {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.strip-link--back {
+  grid-template-columns: auto auto minmax(0, 1fr);
+}
+
+/* 首頁入口：深色底 */
+.strip-link--dark {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #f3f1ea;
+  padding: 1.4rem 1.75rem;
+  border-radius: 4px;
+}
+
+.strip-link--dark .strip-link-desc {
+  color: rgba(243, 241, 234, 0.78);
+}
+
+.strip-link--dark .strip-link-arrow span,
+.strip-link--dark .strip-link-arrow span::after {
+  background: #f3f1ea;
+  border-color: #f3f1ea;
+}
+
+.strip-link--dark .strip-link-arrow span::after {
+  background: transparent;
+}
+
+.strip-link--dark:hover,
+.strip-link--dark:focus-visible {
+  background: var(--forest-dark);
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@media (max-width: 768px) {
+  .strip-link,
+  .strip-link--back {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .strip-link-title {
+    grid-row: 1;
+  }
+  .strip-link-desc {
+    grid-row: 2;
+  }
+  .strip-link-arrow,
+  .strip-link--back .strip-link-arrow {
+    grid-row: 1 / 3;
+  }
+  .strip-link--dark {
+    padding: 1.15rem 1.25rem;
+  }
+}
