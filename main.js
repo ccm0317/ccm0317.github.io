@@ -263,7 +263,31 @@ if (!location.hash) {
   window.addEventListener("load", toTop, { once: true });
 }
 
+/* ------------------------------------------------------------------
+ * 5. 關鍵檢討彈出視窗：<button data-dialog="id"> 開啟 <dialog id>
+ * ------------------------------------------------------------------ */
+function initDialogs() {
+  document.querySelectorAll("[data-dialog]").forEach((btn) => {
+    const dlg = document.getElementById(btn.dataset.dialog);
+    if (!dlg || typeof dlg.showModal !== "function") return;
+    btn.addEventListener("click", () => {
+      dlg.showModal();
+      document.body.style.overflow = "hidden";
+    });
+  });
+  document.querySelectorAll("dialog.case-dialog").forEach((dlg) => {
+    dlg.querySelector(".case-dialog-close")?.addEventListener("click", () => dlg.close());
+    dlg.addEventListener("click", (event) => {
+      if (event.target === dlg) dlg.close();
+    });
+    dlg.addEventListener("close", () => {
+      document.body.style.overflow = "";
+    });
+  });
+}
+
 initAnimations();
 initModal();
+initDialogs();
 initNavbar();
 initMetrics();
