@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chang Che-Ming | Resume</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --ink: #1a1a1a; --muted: #555; --line: rgba(0,0,0,.14);
+    --accent: #2e4a3d; --tint: #e9eee9;
+    --serif: 'Noto Serif CJK TC', 'Noto Serif TC', 'Songti TC', serif;
+    --sans: 'Noto Sans CJK TC', 'Noto Sans TC', 'PingFang TC', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; }
+  body { font-family: var(--sans); color: var(--ink); font-size: 9.3pt; line-height: 1.5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 13mm 14mm 11mm; display: flex; flex-direction: column; overflow: hidden; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 4mm; border-bottom: 1.2pt solid var(--ink); }
+  .name { font-family: var(--serif); font-weight: 700; font-size: 24pt; letter-spacing: .14em; line-height: 1.1; }
+  .name-en { font-family: var(--serif); font-size: 10pt; letter-spacing: .22em; margin-top: 1.5mm; }
+  .role { color: var(--accent); font-weight: 700; font-size: 10pt; margin-top: 2.5mm; letter-spacing: .04em; }
+  .contact { text-align: right; font-size: 8.4pt; line-height: 1.75; color: var(--muted); }
+  .contact a { color: var(--ink); text-decoration: none; }
+
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; margin: 6mm 0 0; }
+  .metric { background: var(--tint); padding: 4.5mm 4mm 4mm; }
+  .metric b { display: block; font-family: var(--serif); font-size: 22pt; margin-bottom: 1.5mm; color: var(--accent); line-height: 1.15; }
+  .metric b small { font-size: 9pt; color: var(--ink); margin-left: .5mm; }
+  .metric span { font-size: 8pt; color: var(--muted); line-height: 1.45; display: block; }
+
+  .body { display: grid; grid-template-columns: 1fr 58mm; gap: 9mm; margin-top: 8mm; flex: 1; }
+  h2 { font-family: var(--serif); font-size: 9.5pt; letter-spacing: .2em; color: var(--ink); padding-bottom: 1.5mm; border-bottom: .6pt solid var(--ink); margin-bottom: 2.4mm; }
+  h2 small { font-family: var(--sans); font-size: 7.6pt; letter-spacing: .08em; color: var(--muted); font-weight: 400; margin-left: 2mm; }
+  section + section { margin-top: 7mm; }
+
+  .summary { font-size: 8.8pt; line-height: 1.68; }
+  .job { margin-bottom: 4.2mm; }
+  .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
+  .job-head b { font-size: 10pt; }
+  .job-head .title { color: var(--accent); font-weight: 500; margin-left: 2mm; font-size: 8.8pt; }
+  .job-head time { font-family: var(--serif); font-size: 8.2pt; color: var(--muted); white-space: nowrap; }
+  ul.points { list-style: none; margin-top: 1.5mm; }
+  ul.points li { position: relative; padding-left: 3.5mm; margin-top: 1.8mm; line-height: 1.6; }
+  ul.points em { font-style: normal; font-weight: 700; color: var(--accent); }
+  ul.points li::before { content: ""; position: absolute; left: 0; top: .78em; width: 1.6mm; height: .7pt; background: var(--accent); }
+  ul.points li strong { font-weight: 700; }
+  .job p { margin-top: 1.2mm; line-height: 1.6; color: #2a2a2a; }
+
+  .side-list { list-style: none; }
+  .side-list li { padding: 1.9mm 0; border-bottom: .5pt solid var(--line); line-height: 1.45; }
+  .side-list li:first-child { padding-top: 0; }
+  .side-list .meta { display: block; font-size: 7.6pt; color: var(--muted); }
+  .side-list .yr { font-family: var(--serif); font-size: 7.8pt; color: var(--accent); display: block; }
+  .side-list .sub { display: block; font-size: 7.8pt; color: var(--muted); margin-top: .5mm; }
+  .work { margin-bottom: 1.8mm; line-height: 1.6; }
+  .work b { font-weight: 700; }
+
+  .side-list li.skill { display: grid; grid-template-columns: 22mm 1fr; align-items: baseline; }
+  .side-list li.skill .meta { display: inline; }
+  footer { margin-top: 4mm; padding-top: 2.5mm; border-top: .5pt solid var(--line); display: flex; justify-content: space-between; font-size: 7.4pt; color: var(--muted); }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+<style>
+  .page.en .name { letter-spacing: .08em; font-size: 22pt; }
+  .page.en .name-en { letter-spacing: .3em; }
+  .page.en { font-size: 8.8pt; }
+  .page.en ul.points li { margin-bottom: .9mm; }
+  .page.en .side-list li { line-height: 1.4; }
+  .page.en ul.points li { line-height: 1.45; }
+  .page.en .skill-en .meta { display:block; }
+  .page.en aside .side-list .yr { display: inline; margin-right: 2mm; }
+  .page.en section + section { margin-top: 6mm; }
+  .page.en aside .side-list li { padding-top: 1.2mm; padding-bottom: 1.2mm; }
+</style>
+</head>
+<body>
+<div class="page en">
+  <header>
+    <div>
+      <div class="name">CHANG CHE-MING</div>
+      <div class="name-en">張哲銘</div>
+      <div class="role">Owner-side Architectural Project Management · PMP®</div>
+    </div>
+    <div class="contact">
+      <a href="mailto:victor60807123456789@gmail.com">victor60807123456789@gmail.com</a><br>
+      <a href="https://www.linkedin.com/in/ccmstudio2000">linkedin.com/in/ccmstudio2000</a><br>
+      <a href="https://ccm0317.github.io/">ccm0317.github.io</a><br>
+      New Taipei City, Taiwan
+    </div>
+  </header>
+
+  <div class="metrics">
+    <div class="metric"><b>NT$570<small>M</small></b><span>Procurement managed<br>NT$1.74B SRC project</span></div>
+    <div class="metric"><b>4<small>projects</small></b><span>Urban renewal &amp; reconstruction<br>9,050 m² total site</span></div>
+    <div class="metric"><b>270+</b><span>Landowners engaged<br>Up to 150 per project</span></div>
+    <div class="metric"><b>PMP®</b><span>Project Management<br>Professional</span></div>
+  </div>
+
+  <div class="body">
+    <main>
+
+      <section>
+        <h2>EXPERIENCE</h2>
+        <div class="job">
+          <div class="job-head"><div><b>Jiateng Construction</b><span class="title">Project Specialist, Owner-side PM</span></div><time>2024 — 2026</time></div>
+          <ul class="points">
+            <li>22F/B6F SRC tower: managed <em>NT$570M</em> of procurement, from scope breakdown to contract award</li>
+            <li>Chaired weekly <em>shop-drawing reviews</em> with contractor, architect, structural and MEP</li>
+            <li><em>Elevator traffic analysis</em> of 5 schemes; added 2 cars, peak capacity now 2× demand</li>
+            <li>Solved an <em>elevator pit vs. generator air duct clash</em> in ArchiCAD 3D; no schedule delay</li>
+            <li>Advanced <em>3 urban renewal projects</em> (50/150/75 households); planned 4 unit types for one</li>
+            <li>Built a <em>payment system</em> and project workbook; each claim cut from 2–3 hours to 10 min</li>
+            <li>Wrote a Lessons Learned Handbook on drawing control, issues and renewal SOPs</li>
+          </ul>
+        </div>
+        <div class="job">
+          <div class="job-head"><div><b>Community &amp; Environmental Education</b></div></div>
+          <ul class="points">
+            <li><b>GRAT</b> architecture review collective · Operations Advisor · 2021–</li>
+            <li><b>Taiwan Treehouse Association</b> · Board Member · 2020–</li>
+            <li><b>Lujiao Creek Wetland</b> · Environmental Educator · 2012– (14 yrs)</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>PROJECTS</h2>
+        <div class="work"><b>Invisible Waterscape</b> | NTUST thesis: water infrastructure as landscape</div>
+        <div class="work"><b>Tavorong Bamboo House</b> | Best Capstone Award: 1:1 bamboo build</div>
+      </section>
+
+    </main>
+
+    <aside>
+      <section>
+        <h2>LICENSES</h2>
+        <ul class="side-list">
+          <li>PMP®<span class="meta">PMI</span></li>
+          <li>Technician Certificates (Level C)<span class="sub">Architectural Drafting (manual &amp; CAD)<br>Concrete, Surveying</span></li>
+        </ul>
+      </section>
+      <section>
+        <h2>EDUCATION</h2>
+        <ul class="side-list">
+          <li><span class="yr">2020 — 2023</span>NTUST (Taiwan Tech)<span class="meta">B.S., Architecture</span></li>
+          <li><span class="yr">2018 — 2020</span>Taipei Tech<span class="meta">Architecture (transferred)</span></li>
+          <li><span class="yr">2015 — 2018</span>Da-An Vocational High School<span class="meta">Architecture</span></li>
+        </ul>
+      </section>
+      <section>
+        <h2>AWARDS</h2>
+        <ul class="side-list">
+          <li><span class="yr">2022</span>NTUST Best Capstone Award</li>
+          <li><span class="yr">2021</span>New Taipei EPA Environmental Award</li>
+          <li><span class="yr">2020</span>Taipei Tech Campus Design, 1st Place</li>
+          <li><span class="yr">2018</span>National Drafting Competition, 3rd</li>
+        </ul>
+      </section>
+      <section>
+        <h2>SKILLS</h2>
+        <ul class="side-list">
+          <li>AI collaboration<span class="meta">Data modeling, system building, documentation</span></li>
+          <li>ArchiCAD · AutoCAD · SketchUp · Lumion</li>
+          <li>InDesign · Premiere · Microsoft Office</li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <span>Portfolio and full experience: <a href="https://ccm0317.github.io/">ccm0317.github.io</a></span>
+    <span>2026.10</span>
+  </footer>
+</div>
+</body>
+</html>
