@@ -3064,3 +3064,33 @@ a.metric-card:hover .metric-jump {
     max-width: 560px;
   }
 }
+
+/* 案例卡：我負責的關鍵檢討 */
+.urban-card-owned {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0.9rem 0 0;
+  border-top: 1px dashed rgba(46, 74, 61, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.urban-card-owned li {
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--text-light);
+}
+
+.urban-card-owned strong {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+}
+
+.urban-renewal-card:has(.urban-card-owned) .urban-card-desc {
+  flex-grow: 0;
+}
