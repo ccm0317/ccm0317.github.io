@@ -4,7 +4,7 @@
  * 1. 進場動畫（GSAP：標題、淡入、視差）
  * 2. 文件／影片彈窗
  * 3. 導覽列（捲動底色、手機版自動隱藏）
- * 4. 關鍵數據卡（數字滾動、點擊跳轉提示）
+ * 4. 關鍵數據卡（數字滾動、點擊跳轉提示；專頁案例抵達提示）
  */
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -224,6 +224,15 @@ function initMetrics() {
       el.textContent = (0).toFixed(decimals(el));
       observer.observe(el);
     });
+  }
+
+  // 從首頁關鍵數據卡連到專頁（urban-renewal.html#case-…）時，抵達後同樣閃一下
+  const arrived = location.hash && document.querySelector(`.urban-renewal-card${location.hash}`);
+  if (arrived) {
+    setTimeout(() => {
+      arrived.classList.add("is-flash");
+      setTimeout(() => arrived.classList.remove("is-flash"), 1800);
+    }, prefersReducedMotion ? 0 : 500);
   }
 
   document.querySelectorAll('a.metric-card[href^="#"]').forEach((card) => {

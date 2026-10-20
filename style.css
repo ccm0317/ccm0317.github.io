@@ -8,9 +8,9 @@
  *   3. 首頁 Hero
  *   4. 01 關鍵數據
  *   5. 02 專案經歷
- *   6. 03 都更觀點
- *   7. 04 證照學歷
- *   8. 05 學術與實作專案
+ *   6. 都更專案實務頁（urban-renewal.html：頁首、03 流程、工具）
+ *   7. 03 證照學歷
+ *   8. 04 學術與實作專案
  *   9. 頁尾聯絡
  *  10. 文件／影片彈窗
  *
@@ -1532,7 +1532,7 @@ a.metric-card:hover .metric-jump {
   font-size: 1.08rem;
 }
 
-/* ==================== 03 都更觀點 ==================== */
+/* ==================== 都更專案實務頁 ==================== */
 /* 沿用 02 案例卡的語彙：細分隔線、細進度條、無底色框 */
 .perspective-section {
   max-width: var(--container);
@@ -1554,8 +1554,8 @@ a.metric-card:hover .metric-jump {
 }
 
 .ur-intro p {
-  max-width: 46rem;
-  font-size: 1.05rem;
+  max-width: 48rem;
+  font-size: 1.1rem;
 }
 
 .ur-legend {
@@ -1564,7 +1564,7 @@ a.metric-card:hover .metric-jump {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 1.4rem;
-  font-size: 0.85rem;
+  font-size: 0.92rem;
   line-height: 1.5;
   letter-spacing: 0.06em;
   color: var(--text-light);
@@ -1603,7 +1603,7 @@ a.metric-card:hover .metric-jump {
 
 .ur-hint {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.92rem;
   line-height: 1.5;
   letter-spacing: 0.06em;
   color: var(--text-light);
@@ -1640,8 +1640,10 @@ a.metric-card:hover .metric-jump {
   display: none;
 }
 
-.ur-stage-head:hover {
-  background: rgba(46, 74, 61, 0.04);
+@media (hover: hover) {
+  .ur-stage-head:hover {
+    background: rgba(46, 74, 61, 0.04);
+  }
 }
 
 .ur-stage-head:focus-visible {
@@ -1659,14 +1661,14 @@ a.metric-card:hover .metric-jump {
 
 .ur-stage-name {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   margin-top: 0.35rem;
 }
 
 .ur-stage-lvl {
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   letter-spacing: 0.12em;
   font-weight: 600;
   color: var(--accent);
@@ -1697,7 +1699,7 @@ a.metric-card:hover .metric-jump {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   letter-spacing: 0.04em;
   color: var(--text-light);
   min-height: 24px;
@@ -1719,7 +1721,7 @@ a.metric-card:hover .metric-jump {
 }
 
 .ur-s {
-  font-size: 0.86rem;
+  font-size: 0.95rem;
   line-height: 1.55;
   padding: 0.5rem 0;
   border-top: 1px solid var(--border);
@@ -1746,7 +1748,7 @@ a.metric-card:hover .metric-jump {
 .ur-work-tag {
   flex: none;
   margin-left: auto;
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   line-height: 1;
   padding: 0.22rem 0.38rem;
   border: 1px solid var(--accent);
@@ -1760,7 +1762,19 @@ a.metric-card:hover .metric-jump {
 }
 
 .ur-manual {
-  margin-top: 3rem;
+  margin-top: 0;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+  padding: 2rem 2.25rem;
+}
+
+.ur-manual .manual-desc {
+  font-size: 1rem;
+}
+
+.ur-manual .manual-points li {
+  font-size: 0.95rem;
 }
 
 .urban-card-action {
@@ -1797,7 +1811,7 @@ a.metric-card:hover .metric-jump {
 
 .ur-data-title {
   font-family: var(--font-sans);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   display: flex;
@@ -1806,7 +1820,7 @@ a.metric-card:hover .metric-jump {
 }
 
 .ur-data-badge {
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   padding: 0.22rem 0.45rem;
   border: 1px solid var(--accent);
   color: var(--accent);
@@ -1821,6 +1835,7 @@ a.metric-card:hover .metric-jump {
 
 .ur-chain {
   margin-top: 0.9rem;
+  font-size: 1.02rem;
   font-weight: 500;
   color: var(--accent);
   line-height: 1.7;
@@ -1828,7 +1843,7 @@ a.metric-card:hover .metric-jump {
 
 .ur-data-desc {
   margin-top: 0.5rem;
-  font-size: 0.92rem;
+  font-size: 1rem;
   line-height: 1.85;
 }
 
@@ -2535,4 +2550,132 @@ a.metric-card:hover .metric-jump {
 
 #pdf-frame {
   display: block;
+}
+
+/* 頁首、導覽、首頁入口 */
+.logo-link {
+  text-decoration: none;
+}
+
+.nav-back {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.subpage-header {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 10rem 2rem 1rem;
+}
+
+.subpage-back {
+  display: inline-block;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: var(--text-light);
+  text-decoration: none;
+  margin-bottom: 2.5rem;
+  transition: color 0.2s ease;
+}
+
+.subpage-back:hover {
+  color: var(--accent);
+}
+
+.subpage-eyebrow {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.subpage-title {
+  font-family: var(--font-sans);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-dark);
+  margin-bottom: 1.25rem;
+}
+
+.subpage-lead {
+  max-width: 52rem;
+  font-size: 1.1rem;
+}
+
+.subpage-section {
+  padding-top: 4rem;
+  padding-bottom: 3rem;
+}
+
+.subpage-section .urban-renewal-showcase {
+  margin: 0;
+}
+
+.tools-section {
+  padding-bottom: 6rem;
+}
+
+.ur-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ur-tools .ur-data {
+  margin-top: 0;
+}
+
+#urban-cases,
+#perspective,
+#tools,
+.urban-renewal-card[id] {
+  scroll-margin-top: 110px;
+}
+
+.jiateng-header:last-child {
+  margin-bottom: 0;
+}
+
+.ur-teaser-action {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .ur-manual {
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 1.75rem;
+    padding: 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .subpage-header {
+    padding: 2.5rem 1.25rem 0.5rem;
+  }
+  .subpage-back {
+    margin-bottom: 1.5rem;
+  }
+  .subpage-lead {
+    font-size: 1rem;
+  }
+  .subpage-section {
+    padding-top: 2.5rem;
+    padding-bottom: 2rem;
+  }
+  .ur-manual {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1.4rem 1.25rem;
+  }
+  .ur-manual .manual-cover {
+    max-width: 200px;
+  }
+  .ur-s {
+    font-size: 0.92rem;
+  }
+}
+
+.ur-teaser-action .manual-btn {
+  text-decoration: none;
 }
