@@ -3618,23 +3618,6 @@ a.metric-card:hover .metric-jump {
   }
 }
 
-/* 03 證照學歷：滿版淡綠底，區分段落 */
-.credentials-section {
-  position: relative;
-  isolation: isolate;
-}
-
-.credentials-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: calc(50% - 50vw);
-  right: calc(50% - 50vw);
-  background: #edf1ed;
-  z-index: -1;
-}
-
 .credentials-section {
   padding-top: 5rem;
   padding-bottom: 5rem;
@@ -3644,5 +3627,57 @@ a.metric-card:hover .metric-jump {
   .credentials-section {
     padding-top: 3.25rem;
     padding-bottom: 3.25rem;
+  }
+}
+
+/* 03 證照學歷：每個區塊各自一塊淡綠底 */
+.credentials-section .cred-block {
+  background: #e3eae4;
+  padding: 1.75rem 1.6rem 1.25rem;
+  border-radius: 3px;
+}
+
+.credentials-section .cred-block h3 {
+  border-bottom-color: rgba(27, 40, 32, 0.55);
+}
+
+.credentials-section .cred-block .education-list li:last-child,
+.credentials-section .cred-block .education-list > li:last-child .edu-item {
+  border-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .credentials-section .cred-block {
+    padding: 1.4rem 1.2rem 1rem;
+  }
+}
+
+/* 卡片內：年份／類別放在項目上方，留給名稱完整寬度 */
+.credentials-section .cred-block .edu-item {
+  flex-wrap: wrap;
+  row-gap: 0.25rem;
+  column-gap: 0.75rem;
+}
+
+.credentials-section .cred-block .edu-year {
+  flex: 0 0 100%;
+  padding-top: 0;
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.credentials-section .cred-block .edu-detail {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.credentials-section .cred-block .edu-cert-link {
+  align-self: center;
+}
+
+@media (max-width: 768px) {
+  .credentials-section .cred-block .edu-cert-link {
+    align-self: flex-start;
   }
 }
