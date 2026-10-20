@@ -1763,10 +1763,10 @@ a.metric-card:hover .metric-jump {
 
 .ur-manual {
   margin-top: 0;
-  grid-template-columns: 260px minmax(0, 1fr);
-  gap: 2.5rem;
-  align-items: start;
-  padding: 2rem 2.25rem;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 2.75rem;
+  align-items: center;
+  padding: 2.25rem 2.5rem;
 }
 
 .ur-manual .manual-desc {
@@ -2665,9 +2665,6 @@ a.metric-card:hover .metric-jump {
     grid-template-columns: minmax(0, 1fr);
     padding: 1.4rem 1.25rem;
   }
-  .ur-manual .manual-cover {
-    max-width: 200px;
-  }
   .ur-s {
     font-size: 0.92rem;
   }
@@ -3044,4 +3041,32 @@ a.metric-card:hover .metric-jump {
 
 .ur-concept-svg text {
   font-family: var(--font-sans);
+}
+
+/* 手冊卡：封面＋兩張內頁 */
+.ur-manual-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.ur-manual-pages {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.ur-manual-pages .manual-cover {
+  box-shadow:
+    0 10px 20px rgba(27, 40, 32, 0.14),
+    0 2px 6px rgba(27, 40, 32, 0.08);
+}
+
+@media (max-width: 1024px) {
+  .ur-manual {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ur-manual-visual {
+    max-width: 560px;
+  }
 }
