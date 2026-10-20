@@ -3551,3 +3551,26 @@ a.metric-card:hover .metric-jump {
     padding: 1.15rem 1.25rem;
   }
 }
+
+/* 連結條只剩標題與箭頭 */
+.strip-link {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.strip-link--back {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+@media (max-width: 768px) {
+  .strip-link,
+  .strip-link--back {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .strip-link-arrow,
+  .strip-link--back .strip-link-arrow {
+    grid-row: 1;
+  }
+  .strip-link--back .strip-link-title {
+    grid-column: 1;
+  }
+}
