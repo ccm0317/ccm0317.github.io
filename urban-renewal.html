@@ -353,10 +353,22 @@
           </div>
         </div>
         <div class="ur-data">
-          <div class="ur-data-card">
-            <h3 class="ur-data-title">單一帳本 <span class="ur-data-badge">原型</span></h3>
+          <div class="ur-data-card ur-data-card--ledger">
+            <button
+              class="ur-ledger-shot open-modal"
+              data-src="/payment_dashboard.jpg"
+              data-type="image"
+              aria-label="放大檢視業主戰情看板畫面"
+            >
+              <img src="/payment_dashboard.jpg" alt="業主戰情看板：合約總額、累計計價、建融與自籌付款、資金水位與待處理提醒（示範資料）" loading="lazy" />
+            </button>
+            <h3 class="ur-data-title">單一帳本 <span class="ur-data-badge">實務建模</span></h3>
             <p class="ur-chain">請款 → 撥款 → 對帳 → 資金預估</p>
-            <p class="ur-data-desc">工程款從廠商送件到資金預估，在同一份資料裡連動，不必在多個檔案之間重複輸入與對帳。</p>
+            <p class="ur-data-desc">以 Google Sheets 加 Apps Script 建置的工程款請款系統。建融 70/30 撥款連動、發票浮額預警、完成比監控，從廠商請款到資金預估都在同一份帳本裡連動。</p>
+            <div class="ur-ledger-actions">
+              <a href="/payment-demo/" class="manual-btn primary" target="_blank" rel="noopener"><span>操作示範版</span><span aria-hidden="true">↗</span></a>
+            </div>
+            <p class="ur-ledger-note">示範版使用虛構資料，可直接操作。</p>
           </div>
           <div class="ur-data-card ur-data-card--concept">
             <h3 class="ur-data-title">都更建案全週期系統 <span class="ur-data-badge ur-data-badge--concept">概念</span></h3>

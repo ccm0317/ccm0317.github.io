@@ -2988,3 +2988,43 @@ a.metric-card:hover .metric-jump {
     align-self: flex-end;
   }
 }
+
+/* 單一帳本卡：畫面縮圖與示範版入口 */
+.ur-ledger-shot {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(46, 74, 61, 0.18);
+  background: #fff;
+  cursor: zoom-in;
+  box-shadow: 0 10px 24px rgba(27, 40, 32, 0.1);
+  transition: transform 0.25s ease;
+}
+
+.ur-ledger-shot:hover {
+  transform: translateY(-3px);
+}
+
+.ur-ledger-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ur-ledger-actions {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ur-ledger-actions .manual-btn {
+  text-decoration: none;
+}
+
+.ur-ledger-note {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: #6b706c;
+}
