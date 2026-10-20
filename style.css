@@ -1763,7 +1763,7 @@ a.metric-card:hover .metric-jump {
 
 .ur-manual {
   margin-top: 0;
-  grid-template-columns: 220px minmax(0, 1fr);
+  grid-template-columns: 260px minmax(0, 1fr);
   gap: 2.5rem;
   align-items: start;
   padding: 2rem 2.25rem;
@@ -2680,157 +2680,6 @@ a.metric-card:hover .metric-jump {
   text-decoration: none;
 }
 
-/* 實例時程（甘特條） */
-.ur-gantt-wrap {
-  margin: 3.5rem 0 0;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border);
-}
-
-.ur-gantt-title {
-  font-family: var(--font-sans);
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  margin-bottom: 0.6rem;
-}
-
-.ur-gantt-cap p {
-  max-width: 48rem;
-  font-size: 1rem;
-}
-
-.ur-gantt-legend {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.4rem;
-  margin: 1.25rem 0 1rem;
-  font-size: 0.92rem;
-  color: var(--text-light);
-}
-
-.ur-gantt-legend li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.ur-gantt-key {
-  width: 18px;
-  height: 8px;
-  display: inline-block;
-}
-
-.ur-gantt-key--do,
-.ur-gantt-row--do .ur-gantt-bar {
-  background: var(--accent);
-}
-
-.ur-gantt-key--rv,
-.ur-gantt-row--rv .ur-gantt-bar {
-  background: #c9d3cc;
-}
-
-.ur-gantt {
-  list-style: none;
-  border-top: 1px solid var(--text-dark);
-}
-
-.ur-gantt-row {
-  display: grid;
-  grid-template-columns: 17rem minmax(0, 1fr);
-  gap: 1.5rem;
-  align-items: center;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.ur-gantt-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  font-size: 0.95rem;
-  line-height: 1.45;
-}
-
-.ur-gantt-label strong {
-  font-weight: 600;
-  color: var(--text-dark);
-}
-
-.ur-gantt-label span {
-  font-size: 0.82rem;
-  color: var(--text-light);
-}
-
-.ur-gantt-track {
-  position: relative;
-  height: 26px;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0,
-    transparent calc(100% / 37 * 12 - 1px),
-    rgba(0, 0, 0, 0.06) calc(100% / 37 * 12 - 1px),
-    rgba(0, 0, 0, 0.06) calc(100% / 37 * 12)
-  );
-}
-
-.ur-gantt-bar {
-  position: absolute;
-  top: 4px;
-  bottom: 4px;
-  min-width: 4px;
-  display: flex;
-  align-items: center;
-}
-
-.ur-gantt-dur {
-  position: absolute;
-  left: calc(100% + 0.5rem);
-  white-space: nowrap;
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  color: var(--text-light);
-}
-
-.ur-gantt-row:last-child .ur-gantt-dur {
-  left: auto;
-  right: calc(100% + 0.5rem);
-}
-
-.ur-gantt-axis {
-  display: grid;
-  grid-template-columns: 17rem minmax(0, 1fr);
-  gap: 1.5rem;
-}
-
-.ur-gantt-ticks {
-  grid-column: 2;
-  position: relative;
-  height: 1.8rem;
-  font-size: 0.78rem;
-  color: var(--text-light);
-  letter-spacing: 0.04em;
-}
-
-.ur-gantt-ticks span {
-  position: absolute;
-  top: 0.45rem;
-  transform: translateX(-50%);
-  white-space: nowrap;
-}
-
-.ur-gantt-ticks span:first-child {
-  transform: none;
-}
-
-.ur-gantt-note {
-  margin-top: 0.75rem;
-  font-size: 0.85rem;
-  color: #6b706c;
-}
-
 /* 專案總表卡 */
 .ur-sheet {
   display: grid;
@@ -2924,19 +2773,6 @@ a.metric-card:hover .metric-jump {
 }
 
 @media (max-width: 768px) {
-  .ur-gantt-row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.45rem;
-  }
-  .ur-gantt-axis {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .ur-gantt-ticks {
-    grid-column: 1;
-  }
-  .ur-gantt-ticks span:last-child {
-    transform: translateX(-100%);
-  }
   .ur-sheet {
     grid-template-columns: minmax(0, 1fr);
     padding: 1.4rem 1.25rem;
@@ -2949,4 +2785,8 @@ a.metric-card:hover .metric-jump {
   .ur-sheet-tabs li {
     width: 50%;
   }
+}
+
+.ur-manual {
+  background: #e9eee9;
 }
