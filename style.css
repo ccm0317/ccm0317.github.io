@@ -3259,3 +3259,71 @@ a.metric-card:hover .metric-jump {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
+/* SRC 案卡：可點的關鍵檢討板塊 */
+.urban-card-owned--link {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  margin-top: 1rem;
+  padding: 1rem 1.1rem 0.9rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: rgba(46, 74, 61, 0.06);
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.urban-card-owned--link .owned-item {
+  display: block;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--text-light);
+}
+
+.urban-card-owned--link .owned-item strong {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+}
+
+.urban-card-owned--link .owned-more {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 3px;
+  background: var(--accent);
+  color: #f3f1ea;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.urban-card-owned--link .owned-more span {
+  transition: transform 0.2s ease;
+}
+
+.urban-card-owned--link:hover,
+.urban-card-owned--link:focus-visible {
+  background: rgba(46, 74, 61, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--forest-glow);
+}
+
+.urban-card-owned--link:hover .owned-more span {
+  transform: translateX(4px);
+}
+
+.urban-card-owned--link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
