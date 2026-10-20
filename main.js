@@ -251,6 +251,12 @@ function initMetrics() {
   });
 }
 
+// 從首頁點進專頁（網址沒有 #）時，一律從頁首開始，不沿用上一頁的捲動位置
+if (!location.hash) {
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
+}
+
 initAnimations();
 initModal();
 initNavbar();

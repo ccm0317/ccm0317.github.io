@@ -2784,11 +2784,14 @@ a.metric-card:hover .metric-jump {
   background: #e9eee9;
 }
 
-/* 首頁家騰段落：都更專案實務入口卡 */
+/* 首頁家騰段落：都更專案實務入口（橫跨整列的扁長條） */
+.jiateng-row .jiateng-header {
+  margin-bottom: 1.75rem;
+}
+
 .ur-entry {
   display: block;
-  margin-top: 1.75rem;
-  padding: 1.5rem 1.75rem 1.25rem;
+  padding: 1.1rem 1.5rem 1.2rem;
   border: 1px solid var(--accent);
   background: rgba(46, 74, 61, 0.03);
   color: var(--text-dark);
@@ -2815,11 +2818,11 @@ a.metric-card:hover .metric-jump {
   display: flex;
   align-items: baseline;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 .ur-entry-title {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--accent);
@@ -2831,35 +2834,68 @@ a.metric-card:hover .metric-jump {
   letter-spacing: 0.06em;
 }
 
+.ur-entry-links {
+  margin-left: auto;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--text-light);
+}
+
+.ur-entry-main {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .ur-entry-list {
   list-style: none;
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-top: 1px solid var(--border);
 }
 
-.ur-entry-row {
-  display: grid;
-  grid-template-columns: 13rem minmax(0, 1fr) 2.5rem;
-  gap: 1rem;
-  align-items: center;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.92rem;
+.ur-entry-case {
+  padding: 0.75rem 1.25rem 0 0;
+  margin-right: 1.25rem;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ur-entry-case:last-child {
+  border-right: 0;
+  margin-right: 0;
+  padding-right: 0;
 }
 
 .ur-entry-name {
+  font-size: 0.92rem;
   color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ur-entry-name em {
   font-style: normal;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--accent);
-  margin-right: 0.6rem;
+  margin-right: 0.5rem;
+}
+
+.ur-entry-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .ur-entry-bar {
+  flex: 1;
   display: flex;
   gap: 3px;
 }
@@ -2882,30 +2918,19 @@ a.metric-card:hover .metric-jump {
   font-size: 0.82rem;
   font-weight: 700;
   color: var(--accent);
-  text-align: right;
-}
-
-.ur-entry-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
-  font-size: 0.88rem;
-  letter-spacing: 0.04em;
-  color: var(--text-light);
+  flex: none;
 }
 
 .ur-entry-arrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
   background: var(--accent);
   color: #f3f1ea;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   flex: none;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2914,19 +2939,52 @@ a.metric-card:hover .metric-jump {
   transform: translateX(4px);
 }
 
+@media (max-width: 1100px) {
+  .ur-entry-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ur-entry-case:nth-child(2n) {
+    border-right: 0;
+    margin-right: 0;
+    padding-right: 0;
+  }
+  .ur-entry-case:nth-child(n + 3) {
+    padding-top: 0.75rem;
+  }
+}
+
 @media (max-width: 768px) {
   .ur-entry {
-    padding: 1.25rem 1.1rem 1rem;
+    padding: 1.1rem 1.1rem 1rem;
   }
-  .ur-entry-row {
-    grid-template-columns: minmax(0, 1fr) 2.5rem;
-    row-gap: 0.4rem;
+  .ur-entry-head {
+    flex-wrap: wrap;
+    row-gap: 0.2rem;
   }
-  .ur-entry-bar {
-    grid-column: 1 / -1;
-    grid-row: 2;
+  .ur-entry-links {
+    margin-left: 0;
+    width: 100%;
+    font-size: 0.78rem;
   }
-  .ur-entry-foot span:first-child {
-    font-size: 0.8rem;
+  .ur-entry-main {
+    gap: 1rem;
+  }
+  .ur-entry-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ur-entry-case {
+    border-right: 0;
+    margin-right: 0;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .ur-entry-case:nth-child(n + 3) {
+    padding-top: 0.6rem;
+  }
+  .ur-entry-case:last-child {
+    border-bottom: 0;
+  }
+  .ur-entry-arrow {
+    align-self: flex-end;
   }
 }
