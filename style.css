@@ -3617,3 +3617,32 @@ a.metric-card:hover .metric-jump {
     grid-column: 1;
   }
 }
+
+/* 03 證照學歷：滿版淡綠底，區分段落 */
+.credentials-section {
+  position: relative;
+  isolation: isolate;
+}
+
+.credentials-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 50vw);
+  right: calc(50% - 50vw);
+  background: #edf1ed;
+  z-index: -1;
+}
+
+.credentials-section {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (max-width: 768px) {
+  .credentials-section {
+    padding-top: 3.25rem;
+    padding-bottom: 3.25rem;
+  }
+}
