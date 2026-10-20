@@ -3574,3 +3574,46 @@ a.metric-card:hover .metric-jump {
     grid-column: 1;
   }
 }
+
+/* 連結條：英文小標在標題上方 */
+.strip-link {
+  row-gap: 0.3rem;
+}
+
+.strip-link .strip-link-eyebrow {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.strip-link .strip-link-title {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.strip-link .strip-link-arrow {
+  grid-column: 2;
+  grid-row: 1 / 3;
+}
+
+.strip-link--back .strip-link-arrow {
+  grid-column: 1;
+}
+
+.strip-link--back .strip-link-eyebrow,
+.strip-link--back .strip-link-title {
+  grid-column: 2;
+}
+
+.strip-link--dark .strip-link-eyebrow {
+  color: rgba(243, 241, 234, 0.72);
+}
+
+@media (max-width: 768px) {
+  .strip-link--back .strip-link-arrow {
+    grid-column: 2;
+  }
+  .strip-link--back .strip-link-eyebrow,
+  .strip-link--back .strip-link-title {
+    grid-column: 1;
+  }
+}
